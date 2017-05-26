@@ -1,4 +1,4 @@
-package subhAShitaDb
+package dbSchema
 
 import org.json4s.native.Serialization
 import org.json4s.ShortTypeHints
