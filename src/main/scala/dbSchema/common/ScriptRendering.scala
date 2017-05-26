@@ -4,13 +4,8 @@ import org.slf4j.LoggerFactory
 import sanskritnlp.transliteration.transliterator
 
 
-case class ScriptRendering(text: String, scheme: String = transliterator.scriptUnknown,
-                           var startLetter: String = null) {
+case class ScriptRendering(text: String, scheme: String = transliterator.scriptUnknown) {
   val log = LoggerFactory.getLogger(getClass.getName)
-
-  def setStartLetter = {
-    startLetter = text.toList.head.toString
-  }
 
   // A unique identifier for a text rendering.
   def getKey: String = {
