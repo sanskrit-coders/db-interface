@@ -4,7 +4,7 @@ import dbSchema.common.ScriptRendering
 import org.slf4j.LoggerFactory
 
 
-case class DictLocation(dictionaryId: String, entryNumber: Int, pageImage: String = null) {
+case class DictLocation(dictionaryId: String, entryNumber: Int, pageImage: Option[String] = None) {
   def getKey: String = {
     return s"${dictionaryId}__${entryNumber}"
   }

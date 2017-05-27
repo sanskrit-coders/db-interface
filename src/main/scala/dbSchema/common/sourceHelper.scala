@@ -7,11 +7,11 @@ object sourceHelper {
   val emptySource = new Source(name = textHelper.fromOnlyText(""))
   def getSanskritDevanaagariiSource(title: String, authors: List[String]): Source = {
     return Source(name=textHelper.getSanskritDevangariiText(title),
-      authors=authors.filter(_.nonEmpty).map(textHelper.getSanskritDevangariiText(_))
+      authors=Some(authors.filter(_.nonEmpty).map(textHelper.getSanskritDevangariiText(_)))
     )
   }
   def fromAuthor(author: String): Source = {
     return new Source(name = textHelper.emptyText,
-      authors = List(author).filter(_.nonEmpty).map(textHelper.fromOnlyText(_)))
+      authors = Some(List(author).filter(_.nonEmpty).map(textHelper.fromOnlyText(_))))
   }
 }

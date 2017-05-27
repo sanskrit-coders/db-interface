@@ -21,9 +21,9 @@ abstract class Annotation(val textKey: String, val source: Source) {
   def getKey(): String = s"${this.getClass.getSimpleName}__${textKey}__${source.getKey}"
 }
 
-case class Topic(scriptRendering: ScriptRendering, language: Language = Language("UNK"))
+case class Topic(text: Text)
 
-case class TopicAnnotation(override val textKey: String, override val source: Source, topics: List[Topic]) extends Annotation(textKey = textKey, source = source)
+case class TopicAnnotation(override val textKey: String, override val source: Source, topics: Seq[Topic]) extends Annotation(textKey = textKey, source = source)
 
 case class MemorableBitsAnnotation(override val textKey: String, override val source: Source, memorableBits: List[QuoteText]) extends Annotation(textKey = textKey, source = source)
 

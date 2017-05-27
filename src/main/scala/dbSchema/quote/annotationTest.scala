@@ -18,8 +18,8 @@ object annotationTest {
     val text = Text(
       scriptRenderings = List(
         ScriptRendering(text = "दण्डः शास्ति प्रजाः सर्वाः दण्ड एवाभिरक्षति। दण्डः सुप्तेषु जागर्ति दण्डं धर्मं विदुर्बुधाः।। \tदण्डः\t",
-          scheme = transliterator.scriptDevanAgarI)),
-      language = Language("sa"))
+          scheme = Some(transliterator.scriptDevanAgarI))),
+      language = Some(Language("sa")))
     // implicit val formats = Serialization.formats(NoTypeHints)
     log info Serialization.writePretty(text)
     val source = Source(name = textHelper.emptyText)

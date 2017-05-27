@@ -8,10 +8,11 @@ import sanskritnlp.transliteration.transliterator
   * Created by vvasuki on 5/26/17.
   */
 case class Text(scriptRenderings: List[ScriptRendering],
-                language: Language = null) {
+                language: Option[Language] = None) {
   def getKey: String = {
     if (scriptRenderings.nonEmpty) {
-      val canonicalRendering = scriptRenderings.filter(_.scheme == language.canonicalScript).headOption
+      val canonicalRendering = scriptRenderings.filter(
+        x => language.nonEmpty && x.scheme == Some(language.get.canonicalScript)).headOption
       val rendering = canonicalRendering.getOrElse(scriptRenderings.head)
       return rendering.getKey
     } else {
@@ -27,8 +28,8 @@ object textHelper {
 
   // Constructors can mess with JSON (de)serialization
   def fromDetails(text: String, script: String, language: Language) =
-    Text(scriptRenderings = List(text).filter(_.nonEmpty).map(x => ScriptRendering(text = x, scheme = script)),
-      language = language)
+    Text(scriptRenderings = List(text).filter(_.nonEmpty).map(x => ScriptRendering(text = x, scheme = Some(script))),
+      language = Some(language))
 
   def fromOnlyText(text: String) = fromDetails(text = text, script = transliterator.scriptUnknown, language = Language("UNK"))
 
