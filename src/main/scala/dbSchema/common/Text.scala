@@ -27,13 +27,13 @@ object textHelper {
   val log = LoggerFactory.getLogger(getClass.getName)
 
   // Constructors can mess with JSON (de)serialization
-  def fromDetails(text: String, script: String, language: Language) =
-    Text(scriptRenderings = List(text).filter(_.nonEmpty).map(x => ScriptRendering(text = x, scheme = Some(script))),
-      language = Some(language))
+  def fromDetails(text: String, script: Option[String], language: Option[Language]) =
+    Text(scriptRenderings = List(text).filter(_.nonEmpty).map(x => ScriptRendering(text = x, scheme = script)),
+      language = language)
 
-  def fromOnlyText(text: String) = fromDetails(text = text, script = transliterator.scriptUnknown, language = Language("UNK"))
+  def fromOnlyText(text: String) = fromDetails(text = text, script = None, language = None)
 
   def getSanskritDevangariiText(text: String): Text =
-    fromDetails(text = text, script = transliterator.scriptDevanAgarI, language = Language("sa"))
+    fromDetails(text = text, script = Some(transliterator.scriptDevanAgarI), language = Some(Language("sa")))
 }
 
