@@ -29,9 +29,10 @@ object jsonHelper {
 
 
   def getJsonMap(caseObj: Any): Map[String,Object] = {
-    implicit val formats = jsonHelper.formats
+    implicit val formats = jsonHelper.formats.skippingEmptyValues
     val jobj = Extraction.decompose(caseObj)
-    return jobj.values.asInstanceOf[Map[String,Object]]
+    val returnMap = jobj.values.asInstanceOf[Map[String,Object]]
+    return returnMap
   }
 
   def fromJsonMap(jsonMap: mutable.Map[String, _]): Any = {
