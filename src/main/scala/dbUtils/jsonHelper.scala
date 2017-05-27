@@ -1,6 +1,8 @@
 package dbUtils
 
 import dbSchema.quote.{QuoteText, _}
+import dbSchema.common.Text
+import dbSchema.dictionary._
 import org.json4s.native.Serialization
 import org.json4s.{Extraction, ShortTypeHints}
 
@@ -12,6 +14,7 @@ import scala.collection.mutable
 object jsonHelper {
   val formats = Serialization.formats(ShortTypeHints(
     List(
+      classOf[Text],
       classOf[QuoteText],
       classOf[OriginAnnotation],
       classOf[DescriptionAnnotation],
@@ -19,7 +22,9 @@ object jsonHelper {
       classOf[RatingAnnotation],
       classOf[RequestAnnotation],
       classOf[ReferenceAnnotation],
-      classOf[MemorableBitsAnnotation]
+      classOf[MemorableBitsAnnotation],
+      classOf[DictEntry],
+        classOf[DictLocation]
     )))
 
 
@@ -36,6 +41,7 @@ object jsonHelper {
     val jsonStr = Serialization.writePretty(jsonMap)
     //    log debug jsonStr
     jsonClass match {
+      case "Text" => Serialization.read[Text](jsonStr)
       case "QuoteText" => Serialization.read[QuoteText](jsonStr)
       case "OriginAnnotation" => Serialization.read[OriginAnnotation](jsonStr)
       case "DescriptionAnnotation" => Serialization.read[DescriptionAnnotation](jsonStr)
@@ -43,6 +49,8 @@ object jsonHelper {
       case "RatingAnnotation" => Serialization.read[RatingAnnotation](jsonStr)
       case "RequestAnnotation" => Serialization.read[RequestAnnotation](jsonStr)
       case "ReferenceAnnotation" => Serialization.read[ReferenceAnnotation](jsonStr)
+      case "DictEntry" => Serialization.read[ReferenceAnnotation](jsonStr)
+      case "DictLocation" => Serialization.read[ReferenceAnnotation](jsonStr)
     }
   }
 

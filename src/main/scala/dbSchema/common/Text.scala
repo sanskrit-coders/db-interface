@@ -9,12 +9,6 @@ import sanskritnlp.transliteration.transliterator
   */
 case class Text(scriptRenderings: List[ScriptRendering],
                 language: Language = null) {
-  def this(text: String, script: String, language: Language) =
-    this(scriptRenderings = List(text).filter(_.nonEmpty).map(x => ScriptRendering(text = x, scheme = script)),
-      language = language)
-
-  def this(text: String) = this(text = text, script = transliterator.scriptUnknown, language = Language("UNK"))
-
   def getKey: String = {
     if (scriptRenderings.nonEmpty) {
       val canonicalRendering = scriptRenderings.filter(_.scheme == language.canonicalScript).headOption
@@ -28,10 +22,17 @@ case class Text(scriptRenderings: List[ScriptRendering],
 }
 
 object textHelper {
-  val emptyText = new Text("")
+  val emptyText = fromOnlyText("")
   val log = LoggerFactory.getLogger(getClass.getName)
 
+  // Constructors can mess with JSON (de)serialization
+  def fromDetails(text: String, script: String, language: Language) =
+    Text(scriptRenderings = List(text).filter(_.nonEmpty).map(x => ScriptRendering(text = x, scheme = script)),
+      language = language)
+
+  def fromOnlyText(text: String) = fromDetails(text = text, script = transliterator.scriptUnknown, language = Language("UNK"))
+
   def getSanskritDevangariiText(text: String): Text =
-    new Text(text = text, script = transliterator.scriptDevanAgarI, language = Language("sa"))
+    fromDetails(text = text, script = transliterator.scriptDevanAgarI, language = Language("sa"))
 }
 
