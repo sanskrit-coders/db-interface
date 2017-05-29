@@ -1,0 +1,7 @@
+{
+  "_id": "_design/only_admins_write",
+  "access": {
+    "read_only": true
+  },
+  "validate_doc_update": "function(newDoc, oldDoc, userCtx, secObj) {\n    var ddoc = this;\n\n    secObj.admins = secObj.admins || {};\n    secObj.admins.names = secObj.admins.names || [];\n    secObj.admins.roles = secObj.admins.roles || [];\n\n    var IS_DB_ADMIN = false;\n    if(~ userCtx.roles.indexOf('_admin'))\n        IS_DB_ADMIN = true;\n    if(~ secObj.admins.names.indexOf(userCtx.name))\n        IS_DB_ADMIN = true;\n    for(var i = 0; i < userCtx.roles; i++)\n        if(~ secObj.admins.roles.indexOf(userCtx.roles[i]))\n            IS_DB_ADMIN = true;\n\n    if(ddoc.access && ddoc.access.read_only)\n        if(IS_DB_ADMIN)\n            log('Admin change on read-only db: ' + newDoc._id);\n        else\n            throw {'forbidden':'This database is read-only'};\n}"
+}
