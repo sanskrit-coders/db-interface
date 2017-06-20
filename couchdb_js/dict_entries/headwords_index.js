@@ -1,4 +1,4 @@
-function(doc) {
+fn = function(doc) {
     var idx, key;
     if (doc.headwords) {
         for (idx in doc.headwords) {

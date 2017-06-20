@@ -1,5 +1,5 @@
 // index_native_text
-function(doc) {
+fn = function(doc) {
     var idx, key;
     if (doc.text && doc.text.scriptRenderings) {
         for (idx in doc.text.scriptRenderings) {
