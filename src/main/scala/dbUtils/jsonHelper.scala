@@ -2,8 +2,9 @@ package dbUtils
 
 import dbSchema.quote.{QuoteText, _}
 import dbSchema.common.Text
-import dbSchema.dcs.{DcsBook, DcsChapter, DcsSentence, DcsOldBook}
+import dbSchema.dcs.{DcsBook, DcsChapter, DcsOldBook, DcsSentence}
 import dbSchema.dictionary._
+import dbSchema.grammar.{Praatipadika, Subanta, Subantaavalii, SupVibhakti}
 import org.json4s.native.Serialization
 import org.json4s.{Extraction, ShortTypeHints}
 
@@ -30,7 +31,11 @@ object jsonHelper {
       classOf[DcsBook],
       classOf[DcsOldBook],
       classOf[DcsChapter],
-      classOf[DcsSentence]
+      classOf[DcsSentence],
+      classOf[SupVibhakti],
+      classOf[Subanta],
+      classOf[Subantaavalii],
+      classOf[Praatipadika]
     )))
 
 
@@ -39,6 +44,11 @@ object jsonHelper {
     val jobj = Extraction.decompose(caseObj)
     val returnMap = jobj.values.asInstanceOf[Map[String,Object]]
     return returnMap
+  }
+
+  def asString(caseObj: AnyRef): String = {
+    implicit val formats = jsonHelper.formats.skippingEmptyValues
+    Serialization.writePretty(caseObj)
   }
 
   def fromJsonMap(jsonMap: mutable.Map[String, _]): Any = {
@@ -62,6 +72,10 @@ object jsonHelper {
       case "DcsBook" => Serialization.read[DcsBook](jsonStr)
       case "DcsOldBook" => Serialization.read[DcsOldBook](jsonStr)
       case "DcsSentence" => Serialization.read[DcsSentence](jsonStr)
+      case "SupVibhakti" => Serialization.read[SupVibhakti](jsonStr)
+      case "Praatipadika" => Serialization.read[Praatipadika](jsonStr)
+      case "Subanta" => Serialization.read[Subanta](jsonStr)
+      case "Subantaavalii" => Serialization.read[Subantaavalii](jsonStr)
     }
   }
 
