@@ -10,9 +10,7 @@ import org.json4s.{Extraction, ShortTypeHints}
 
 import scala.collection.mutable
 
-/**
-  * Created by vvasuki on 5/26/17.
-  */
+
 object jsonHelper {
   val JSON_CLASS_FIELD_NAME = "jsonClass"
   val formats = Serialization.formats(ShortTypeHints(
@@ -51,11 +49,13 @@ object jsonHelper {
     Serialization.writePretty(caseObj)
   }
 
-  def fromJsonMap(jsonMap: mutable.Map[String, _]): Any = {
+  def fromString(jsonStr: String, jsonClassIn: String = null): Any = {
     implicit val formats = jsonHelper.formats
-    //    log debug (jsonMap.toString)
-    val jsonClass = jsonMap.get(JSON_CLASS_FIELD_NAME).get
-    val jsonStr = Serialization.writePretty(jsonMap)
+    var jsonClass = jsonClassIn
+    if (jsonClassIn == null) {
+      val docMap = Serialization.read[Map[String, _]](jsonStr)
+      jsonClass = docMap.get(jsonHelper.JSON_CLASS_FIELD_NAME).get.asInstanceOf[String]
+    }
     //    log debug jsonStr
     jsonClass match {
       case "Text" => Serialization.read[Text](jsonStr)
@@ -77,6 +77,15 @@ object jsonHelper {
       case "Subanta" => Serialization.read[Subanta](jsonStr)
       case "Subantaavalii" => Serialization.read[Subantaavalii](jsonStr)
     }
+
+  }
+
+  def fromJsonMap(jsonMap: mutable.Map[String, _]): Any = {
+    implicit val formats = jsonHelper.formats
+    //    log debug (jsonMap.toString)
+    val jsonClass = jsonMap.get(JSON_CLASS_FIELD_NAME).get
+    val jsonStr = Serialization.writePretty(jsonMap)
+    fromString(jsonStr = jsonStr, jsonClassIn = jsonClass.asInstanceOf[String])
   }
 
 }
