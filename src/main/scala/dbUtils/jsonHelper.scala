@@ -5,10 +5,11 @@ import dbSchema.common.Text
 import dbSchema.dcs.{DcsBook, DcsChapter, DcsOldBook, DcsSentence}
 import dbSchema.dictionary._
 import dbSchema.grammar.{Praatipadika, Subanta, Subantaavalii, SupVibhakti}
-import org.json4s.native.Serialization
+import org.json4s.native.{JsonMethods, Serialization}
 import org.json4s.{DefaultFormats, Extraction, ShortTypeHints}
 
 import scala.collection.mutable
+import scala.reflect.Manifest
 
 
 class JsonHelper {
@@ -50,21 +51,13 @@ class JsonHelper {
     Serialization.writePretty(caseObj)
   }
 
-  def fromString(jsonStr: String, jsonClassIn: String = null): Any = {
-    var jsonClass = jsonClassIn
-    if (jsonClassIn == null) {
-      val docMap = Serialization.read[Map[String, _]](jsonStr)
-      jsonClass = docMap.get(JSON_CLASS_FIELD_NAME).get.asInstanceOf[String]
-    }
-    //    log debug jsonStr
-    Serialization.read(jsonStr)
+  def fromString[T](jsonStr: String)(implicit mf: Manifest[T]): T = {
+    Serialization.read[T](jsonStr)
   }
 
-  def fromJsonMap(jsonMap: mutable.Map[String, _]): Any = {
-    //    log debug (jsonMap.toString)
-    val jsonClass = jsonMap.get(JSON_CLASS_FIELD_NAME).get
-    val jsonStr = Serialization.writePretty(jsonMap)
-    fromString(jsonStr = jsonStr, jsonClassIn = jsonClass.asInstanceOf[String])
+  def fromJsonMap[T](jsonMap: collection.Map[String, _])(implicit mf: Manifest[T]): T = {
+    val jobj = Extraction.decompose(jsonMap)
+    jobj.extract[T]
   }
 }
 
