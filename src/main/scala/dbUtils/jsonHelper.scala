@@ -57,27 +57,7 @@ class JsonHelper {
       jsonClass = docMap.get(JSON_CLASS_FIELD_NAME).get.asInstanceOf[String]
     }
     //    log debug jsonStr
-    jsonClass match {
-      case "Text" => Serialization.read[Text](jsonStr)
-      case "QuoteText" => Serialization.read[QuoteText](jsonStr)
-      case "OriginAnnotation" => Serialization.read[OriginAnnotation](jsonStr)
-      case "DescriptionAnnotation" => Serialization.read[DescriptionAnnotation](jsonStr)
-      case "TopicAnnotation" => Serialization.read[TopicAnnotation](jsonStr)
-      case "RatingAnnotation" => Serialization.read[RatingAnnotation](jsonStr)
-      case "RequestAnnotation" => Serialization.read[RequestAnnotation](jsonStr)
-      case "ReferenceAnnotation" => Serialization.read[ReferenceAnnotation](jsonStr)
-      case "DictEntry" => Serialization.read[ReferenceAnnotation](jsonStr)
-      case "DictLocation" => Serialization.read[ReferenceAnnotation](jsonStr)
-      case "DcsChapter" => Serialization.read[DcsChapter](jsonStr)
-      case "DcsBook" => Serialization.read[DcsBook](jsonStr)
-      case "DcsOldBook" => Serialization.read[DcsOldBook](jsonStr)
-      case "DcsSentence" => Serialization.read[DcsSentence](jsonStr)
-      case "SupVibhakti" => Serialization.read[SupVibhakti](jsonStr)
-      case "Praatipadika" => Serialization.read[Praatipadika](jsonStr)
-      case "Subanta" => Serialization.read[Subanta](jsonStr)
-      case "Subantaavalii" => Serialization.read[Subantaavalii](jsonStr)
-    }
-
+    Serialization.read(jsonStr)
   }
 
   def fromJsonMap(jsonMap: mutable.Map[String, _]): Any = {
