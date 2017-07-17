@@ -4,7 +4,7 @@ import dbSchema.quote.{QuoteText, _}
 import dbSchema.common.Text
 import dbSchema.dcs.{DcsBook, DcsChapter, DcsOldBook, DcsSentence}
 import dbSchema.dictionary._
-import dbSchema.grammar.{Praatipadika, Subanta, Subantaavalii, SupVibhakti}
+import dbSchema.grammar._
 import org.json4s.native.{JsonMethods, Serialization}
 import org.json4s.{DefaultFormats, Extraction, ShortTypeHints}
 
@@ -36,7 +36,10 @@ class JsonHelper {
         classOf[SupVibhakti],
         classOf[Subanta],
         classOf[Subantaavalii],
-        classOf[Praatipadika]
+        classOf[Praatipadika],
+        classOf[Dhaatu],
+        classOf[TinVivaxaa],
+        classOf[Tinanta]
       ))
   }.skippingEmptyValues
 
