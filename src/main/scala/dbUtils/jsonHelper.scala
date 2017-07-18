@@ -5,8 +5,9 @@ import dbSchema.common.Text
 import dbSchema.dcs.{DcsBook, DcsChapter, DcsOldBook, DcsSentence}
 import dbSchema.dictionary._
 import dbSchema.grammar._
+import dbSchema.vedavaapi._
 import org.json4s.native.{JsonMethods, Serialization}
-import org.json4s.{DefaultFormats, Extraction, ShortTypeHints}
+import org.json4s.{DefaultFormats, Extraction, ShortTypeHints, TypeHints}
 
 import scala.collection.mutable
 import scala.reflect.Manifest
@@ -39,7 +40,17 @@ class JsonHelper {
         classOf[Praatipadika],
         classOf[Dhaatu],
         classOf[TinVivaxaa],
-        classOf[Tinanta]
+        classOf[BookPortion],
+        classOf[BookPositionTarget],
+        classOf[JsonObjectNode],
+        classOf[Target],
+        classOf[ImageAnnotation],
+        classOf[TextAnnotation],
+        classOf[TextTarget],
+        classOf[ImageTarget],
+        classOf[AnnotationSource],
+        classOf[SamaasaAnnotation],
+        classOf[PadaAnnotation]
       ))
   }.skippingEmptyValues
 
@@ -66,8 +77,4 @@ class JsonHelper {
 
 object jsonHelper extends JsonHelper {
 
-}
-
-object pyJsonHelper  extends JsonHelper {
-  override val JSON_CLASS_FIELD_NAME = "py/object"
 }
