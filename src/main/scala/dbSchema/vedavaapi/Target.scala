@@ -1,15 +1,17 @@
 package dbSchema.vedavaapi
 
-case class Target(container_id: Option[String])
+abstract class AbstractTarget(container_id: Option[String]){}
 
-case class BookPositionTarget(override val container_id: Option[String], position: Option[Float]) extends Target(container_id = container_id)
+class Target(container_id: Option[String]) extends AbstractTarget(container_id = container_id)
+
+class BookPositionTarget(val container_id: Option[String], position: Option[Float]) extends AbstractTarget(container_id = container_id)
 
 // Incomplete
-case class Rectangle()
-case class ImageTarget(override val container_id: Option[String], rectangle: Option[Rectangle]) extends Target(container_id = container_id)
+class Rectangle()
+class ImageTarget(val container_id: Option[String], rectangle: Option[Rectangle]) extends AbstractTarget(container_id = container_id)
 
-case class TextTarget(override val container_id: Option[String], shabda_id: Option[String]) extends Target(container_id = container_id)
+class TextTarget(val container_id: Option[String], shabda_id: Option[String]) extends AbstractTarget(container_id = container_id)
 
-case class JsonObjectWithTarget(targets: Option[Seq[Target]])
+abstract class JsonObjectWithTarget(targets: Option[Seq[AbstractTarget]]){}
 
 case class JsonObjectNode(content: JsonObjectWithTarget, children: Option[Seq[JsonObjectWithTarget]])
