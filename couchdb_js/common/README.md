@@ -1,0 +1,1 @@
+These design docs /scripts are a good addition for any non-system database.
