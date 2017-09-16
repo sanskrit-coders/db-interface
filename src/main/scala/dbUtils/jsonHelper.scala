@@ -1,5 +1,6 @@
 package dbUtils
 
+import dbSchema.archive.{FileInfo, ItemInfo, ItemMetadata}
 import dbSchema.quote.{QuoteText, _}
 import dbSchema.common.Text
 import dbSchema.dcs.{DcsBook, DcsChapter, DcsOldBook, DcsSentence}
@@ -34,6 +35,9 @@ class JsonHelper {
         classOf[DcsOldBook],
         classOf[DcsChapter],
         classOf[DcsSentence],
+        classOf[ItemInfo],
+        classOf[ItemMetadata],
+        classOf[FileInfo],
         classOf[SupVibhakti],
         classOf[Subanta],
         classOf[Subantaavalii],

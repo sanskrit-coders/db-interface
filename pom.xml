@@ -5,7 +5,7 @@
     <packaging>jar</packaging>
     <version>2.3</version>
     <description>
-        A scala /java interface to various databases, defining schemas and such.
+        A scala /java interface to various sanskrit and other Indic databases, defining schemas and such.
         Contributions and suggestions are invited at https://github.com/sanskrit-coders/db-interface . (Sister projects there may also be of interest.)
     </description>
     <name>Sanskrit DB interface</name>
@@ -54,6 +54,10 @@
             <id>scala-tools.org</id>
             <name>Scala-tools Maven2 Repository</name>
             <url>http://scala-tools.org/repo-releases</url>
+        </repository>
+        <repository>
+            <id>central maven repo</id>
+            <url>http://central.maven.org/maven2</url>
         </repository>
     </repositories>
 
