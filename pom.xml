@@ -3,7 +3,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
-    <version>2.3</version>
+    <version>2.4</version>
     <description>
         A scala /java interface to various sanskrit and other Indic databases, defining schemas and such.
         Contributions and suggestions are invited at https://github.com/sanskrit-coders/db-interface . (Sister projects there may also be of interest.)
@@ -73,7 +73,7 @@
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
-            <version>2.11.8</version>
+            <version>2.11.11</version>
         </dependency>
         <dependency>
             <groupId>org.scala-lang</groupId>

@@ -1,5 +1,8 @@
 # db-interface
-An interface to various databases, defining schemas and such
+An interface to various data stores, defining common scala case classes corresponding to JSON objects and XML nodes, with helpful methods to (de)serialize such objects.
+
+# Maven setup tips:
+
 
 # couchdb tips
 ## User addition
