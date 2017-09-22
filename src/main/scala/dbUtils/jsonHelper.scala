@@ -1,16 +1,15 @@
 package dbUtils
 
 import dbSchema.archive.{FileInfo, ItemInfo, ItemMetadata}
-import dbSchema.quote.{QuoteText, _}
 import dbSchema.common.Text
 import dbSchema.dcs.{DcsBook, DcsChapter, DcsOldBook, DcsSentence}
 import dbSchema.dictionary._
 import dbSchema.grammar._
+import dbSchema.quote.{QuoteText, _}
 import dbSchema.vedavaapi._
-import org.json4s.native.{JsonMethods, Serialization}
-import org.json4s.{DefaultFormats, Extraction, ShortTypeHints, TypeHints}
+import org.json4s.native.Serialization
+import org.json4s.{DefaultFormats, Extraction, ShortTypeHints}
 
-import scala.collection.mutable
 import scala.reflect.Manifest
 
 
