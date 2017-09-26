@@ -69,6 +69,7 @@ class JsonHelper {
   }
 
   def fromString[T](jsonStr: String)(implicit mf: Manifest[T]): T = {
+    // Alternative method: JsonMethods.parse(responseString).extract[ItemInfo]
     Serialization.read[T](jsonStr)
   }
 

@@ -3,6 +3,7 @@ package dbSchema.rss
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date}
 
+import dbSchema.archive.{FileInfo, ItemInfo, ItemMetadata}
 import org.slf4j.LoggerFactory
 
 import scala.xml.{Comment, Elem, Node}
@@ -28,7 +29,7 @@ object timeHelper {
 //  Feed validator: http://www.feedvalidator.org/check.cgi?url=http%3A%2F%2Ffeeds.feedburner.com%2FSS-bAlamodinI
 //  Template: https://resourcecenter.odee.osu.edu/digital-media-production/how-write-podcast-rss-xml
 //  Best practices: https://github.com/gpodder/podcast-feed-best-practice/blob/master/podcast-feed-best-practice.md
-case class PodcastItem(val title: String, val enclosureUrl: String, val lengthInSecs: Int, var description: String = null, var shortDescription: String = null,
+case class PodcastItem(val title: String, val enclosureUrl: String, val lengthInSecs: Int, var description: String = null, var shortDescription: String = null, val timeUsecs1970: Long = 0,
                        val itunesCategoryCode: Long = 107) {
   val log = LoggerFactory.getLogger(this.getClass)
   if (description == null) {
@@ -59,7 +60,7 @@ case class PodcastItem(val title: String, val enclosureUrl: String, val lengthIn
         {f"${lengthInSecs / 3600}%d:${lengthInSecs / 60}%02d:${lengthInSecs % 60}%02d"}
       </itunes:duration>
         <pubDate>
-          {timeHelper.getTimeRfc2822()}
+          {timeHelper.getTimeRfc2822(timeUsecs1970 = timeUsecs1970)}
         </pubDate>
       </item>
     return feed
