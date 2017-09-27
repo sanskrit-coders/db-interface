@@ -1,5 +1,6 @@
 package dbSchema.rss
 
+import java.net.{URI, URLEncoder}
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date}
 
@@ -11,35 +12,41 @@ import scala.xml.{Comment, Elem, Node}
 object timeHelper {
   val log = LoggerFactory.getLogger(this.getClass)
 
-  def getTimeRfc2822(timeUsecs1970: Long = 0): String = {
+  def getTimeRfc2822(timeSecs1970: Long = 0): String = {
     //    https://tools.ietf.org/html/rfc2822#section-3.3
     val pattern = "EEE, dd MMM yyyy HH:mm:ss Z"
     val format = new SimpleDateFormat(pattern)
     var time: Date = null
-    if (timeUsecs1970 == 0) {
+    if (timeSecs1970 == 0) {
       time = Calendar.getInstance().getTime()
     } else {
-      time = new Date(timeUsecs1970)
+      time = new Date(timeSecs1970 * 1000)
     }
     return format.format(time)
   }
 }
 
 //  Example: view-source:http://feeds.feedburner.com/SS-bAlamodinI
-//  Feed validator: http://www.feedvalidator.org/check.cgi?url=http%3A%2F%2Ffeeds.feedburner.com%2FSS-bAlamodinI
+//  Feed validators:
+//    https://validator.w3.org/feed/
+//    http://www.feedvalidator.org/check.cgi?url=http%3A%2F%2Ffeeds.feedburner.com%2FSS-bAlamodinI
 //  Template: https://resourcecenter.odee.osu.edu/digital-media-production/how-write-podcast-rss-xml
 //  Best practices: https://github.com/gpodder/podcast-feed-best-practice/blob/master/podcast-feed-best-practice.md
 // ItunesU guide: http://mediaserver.sewanee.edu/itunesu/docs/iTunesUAdministrationGuide.pdf
 
-case class PodcastItem(val title: String, val enclosureUrl: String, val lengthInSecs: Int, var description: String = null, var shortDescription: String = null, val timeUsecs1970: Long = 0,
+case class PodcastItem(val title: String, val enclosureUrl: String, val lengthInSecs: Int, var description: String = null, var shortDescription: String = null, val timeSecs1970: Long = 0,
                        val itunesCategoryCode: Long = 107) {
   val log = LoggerFactory.getLogger(this.getClass)
   if (description == null) {
     description = title
   }
+
+  // Max length is 255, but a UTF-8 character can consume multiple bytes.
   if (shortDescription == null) {
-    shortDescription = description.substring(0, math.min(250, description.length - 1))
+    shortDescription = description.substring(0, math.min(150, description.length - 1))
   }
+
+  val enclosureUriEncoded = new URI(enclosureUrl.replaceFirst("://.+", ""), enclosureUrl.replaceFirst(".+://", "//"), null)
 
   def getNode(): Node = {
     val feed =
@@ -55,14 +62,16 @@ case class PodcastItem(val title: String, val enclosureUrl: String, val lengthIn
           {shortDescription}
         </itunes:subtitle>
         <itunesu:category itunesu:code={f"$itunesCategoryCode"}/>
-        <enclosure url={f"$enclosureUrl"} type="audio/mpeg" length="1"/>
+        <enclosure url={f"$enclosureUriEncoded"} type="audio/mpeg" length="1"/>
         <guid>
-          {enclosureUrl}
-        </guid>{Comment("Expected format: H:MM:SS")}<itunes:duration>
-        {f"${lengthInSecs / 3600}%d:${lengthInSecs / 60}%02d:${lengthInSecs % 60}%02d"}
+          {enclosureUriEncoded}
+        </guid>
+        {Comment("Expected format: H:MM:SS")}
+        <itunes:duration>
+        {f"${lengthInSecs / 3600 }%02d:${lengthInSecs / 60   % 60}%02d:${lengthInSecs % 60}%02d"}
       </itunes:duration>
         <pubDate>
-          {timeHelper.getTimeRfc2822(timeUsecs1970 = timeUsecs1970)}
+          {timeHelper.getTimeRfc2822(timeSecs1970 = timeSecs1970)}
         </pubDate>
       </item>
     return feed
@@ -71,9 +80,10 @@ case class PodcastItem(val title: String, val enclosureUrl: String, val lengthIn
 
 case class Podcast(val title: String, val description: String,
                    val website_url: String = "http://archive.org",
+                   val subtitle: Option[String] = None,
                    var publisher: Option[String] = None, val publisherEmail: String,
                    val keywords: Seq[String] = Seq(),
-                   val items: Seq[PodcastItem]) {
+                   val items: Seq[PodcastItem], val feedUrl:Option[String] = None) {
   val log = LoggerFactory.getLogger(this.getClass)
 
   if (publisher == None) {
@@ -86,16 +96,21 @@ case class Podcast(val title: String, val description: String,
 
   def getNode(): Node = {
     var feed =
-      <rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:itunesu="http://www.itunesu.com/feed" version="2.0">
+      <rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:itunesu="http://www.itunesu.com/feed" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+        {Comment("The namespace definitions point to non-existent dtd-s and online validators complain, but that's fine. Can't help it.")}
+
         <channel>
+          {if (feedUrl.isDefined) <atom:link href={f"${feedUrl.get}"} rel="self" type="application/rss+xml" />}
 
           <title>
             {title}
-          </title>{Comment("Various description fields.")}<description>
+          </title>
+          {Comment("Various description fields.")}
+          <description>
           {description}
         </description>
           <itunes:subtitle>
-            {description}
+            {subtitle.getOrElse(title)}
           </itunes:subtitle>
           <itunes:summary>
             {description}

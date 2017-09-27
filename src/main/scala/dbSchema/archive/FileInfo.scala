@@ -21,8 +21,8 @@ case class FileInfo(
   def toPodcastItem(itemMetadata: ItemMetadata,  publishTime: Long): PodcastItem = {
     val albumTag = album.getOrElse("") + " "
     val finalTitle = albumTag.trim +  title.getOrElse(name.get)
-    PodcastItem(title = finalTitle, enclosureUrl = s"https://archive.org/download/${itemMetadata.identifier}/${name}",
-      lengthInSecs = length.getOrElse("10").toFloat.toInt, timeUsecs1970 = publishTime )
+    PodcastItem(title = finalTitle, enclosureUrl = s"https://archive.org/download/${itemMetadata.identifier}/${name.get}",
+      lengthInSecs = length.getOrElse("10").toFloat.toInt, timeSecs1970 = publishTime )
   }
 
 }
