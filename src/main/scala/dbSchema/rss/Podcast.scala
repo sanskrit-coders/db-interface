@@ -52,7 +52,7 @@ case class PodcastItem(val title: String, val enclosureUrl: String, val lengthIn
         <itunes:subtitle>
           {shortDescription}
         </itunes:subtitle>
-        <itunesu:category itunesu:code={f"$itunesCategoryCode"}/>
+        <itunes:category itunesu:code={f"$itunesCategoryCode"}/>
         <enclosure url={f"$enclosureUrl"} type="audio/mpeg" length="1"/>
         <guid>
           {enclosureUrl}
