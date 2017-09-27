@@ -1,10 +1,9 @@
 package dbSchema.rss
 
-import java.net.{URI, URLEncoder}
+import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date}
 
-import dbSchema.archive.{FileInfo, ItemInfo, ItemMetadata}
 import org.slf4j.LoggerFactory
 
 import scala.xml.{Comment, Elem, Node}
@@ -26,18 +25,19 @@ object timeHelper {
   }
 }
 
-//  Example: view-source:http://feeds.feedburner.com/SS-bAlamodinI
-//  Feed validators:
-//    https://validator.w3.org/feed/
-//    http://www.feedvalidator.org/check.cgi?url=http%3A%2F%2Ffeeds.feedburner.com%2FSS-bAlamodinI
-//  Template: https://resourcecenter.odee.osu.edu/digital-media-production/how-write-podcast-rss-xml
-//
-//  Best practices: https://github.com/gpodder/podcast-feed-best-practice/blob/master/podcast-feed-best-practice.md
-// ItunesU guide: http://mediaserver.sewanee.edu/itunesu/docs/iTunesUAdministrationGuide.pdf
-// Google Play required tags: https://support.google.com/googleplay/podcasts/answer/6260341#rpt
-
+/**
+  * See comments associated with Podcast class for some common references.
+  *
+  * @param title
+  * @param enclosureUrl
+  * @param lengthInSecs
+  * @param description
+  * @param shortDescription
+  * @param timeSecs1970
+  * @param itunesCategoryCode
+  */
 case class PodcastItem(val title: String, val enclosureUrl: String, val lengthInSecs: Int, var description: String = null, var shortDescription: String = null, val timeSecs1970: Long = 0,
-                       val itunesCategoryCode: Long = 107) {
+                       val itunesCategoryCode: Option[Int] = None, val ordinal: Option[Int] = None) {
   val log = LoggerFactory.getLogger(this.getClass)
   if (description == null) {
     description = title
@@ -65,12 +65,22 @@ case class PodcastItem(val title: String, val enclosureUrl: String, val lengthIn
         <itunes:subtitle>
           {shortDescription}
         </itunes:subtitle>
-        <itunesu:category itunesu:code={f"$itunesCategoryCode"}/>
-        <enclosure url={f"$enclosureUriEncoded"} type="audio/mpeg" length="1"/>
+
+        {Comment("iTunesU Category Codes: http://sitemanager.itunes.apple.com/help/#itu337EEAE0-035A-4660-B53D-46A13A7721E5")}
+        {if (itunesCategoryCode.isDefined)
+          <itunesu:category itunesu:code={f"$itunesCategoryCode"}/>
+        }
         <guid>
           {enclosureUriEncoded}
         </guid>
 
+        {Comment("'The <itunes:order> tag can be used to override the default ordering of episodes on the iTunes Store by populating it with the number value in which you would like the episode to appear. For example, if you would like an <item> to appear as the first episode of the podcast, you would populate the <itunes:order> tag with “1.” If conflicting order values are present in multiple episodes, the store will order by <pubDate>.'")}
+        {if (ordinal.isDefined)
+        <itunes:order> {ordinal.get} </itunes:order>
+        }
+
+
+      <enclosure url={f"$enclosureUriEncoded"} type="audio/mpeg" length="1"/>
 
         {Comment("Expected format: H:MM:SS")}
         <itunes:duration>
@@ -84,13 +94,43 @@ case class PodcastItem(val title: String, val enclosureUrl: String, val lengthIn
   }
 }
 
+/**
+  *
+  * General References:
+  * Example: view-source:http://feeds.feedburner.com/SS-bAlamodinI
+  *
+  * Feed validators:
+  * https://validator.w3.org/feed/
+  * http://www.feedvalidator.org/check.cgi?url=http%3A%2F%2Ffeeds.feedburner.com%2FSS-bAlamodinI
+  * Template: https://resourcecenter.odee.osu.edu/digital-media-production/how-write-podcast-rss-xml
+
+  * Best practices: https://github.com/gpodder/podcast-feed-best-practice/blob/master/podcast-feed-best-practice.md
+  * ItunesU guide: http://mediaserver.sewanee.edu/itunesu/docs/iTunesUAdministrationGuide.pdf
+  * Google Play required tags: https://support.google.com/googleplay/podcasts/answer/6260341#rpt
+
+  * @param title
+  * @param description
+  * @param imageUrl
+  * @param languageCode
+  * @param websiteUrl
+  * @param subtitle
+  * @param publisher
+  * @param author
+  * @param publisherEmail
+  * @param keywords
+  * @param items
+  * @param feedUrl
+  * @param isExplicitYesNo
+  * @param categories
+  */
 case class Podcast(val title: String, val description: String,
-                   val imageUrl: String,
+                   val imageUrl: String, val languageCode: String,
                    val websiteUrl: Option[String] = None,
                    val subtitle: Option[String] = None,
                    var publisher: Option[String] = None, var author: Option[String] = None, val publisherEmail: String,
                    val keywords: Seq[String] = Seq(),
-                   val items: Seq[PodcastItem], val feedUrl:Option[String] = None) {
+                   val items: Seq[PodcastItem], val feedUrl:Option[String] = None,
+                   val isExplicitYesNo: Option[String] = None, val categories: Seq[String] = Seq("Society & Culture")) {
   val log = LoggerFactory.getLogger(this.getClass)
 
   if (publisher == None) {
@@ -106,6 +146,7 @@ case class Podcast(val title: String, val description: String,
   }
 
   def getNode(): Node = {
+    // XML encoding happens automatically when the node is rendered, no need to specially encode.
     var feed =
       <rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:itunesu="http://www.itunesu.com/feed" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
         {Comment("The namespace definitions point to non-existent dtd-s and online validators complain, but that's fine. Can't help it.")}
@@ -132,7 +173,8 @@ case class Podcast(val title: String, val description: String,
           <link> {websiteUrl.get}</link>
           }
 
-          <language>en-us</language>
+          {Comment("The language should be specified according to RFC 3066, RFC 4647 and RFC 5646. List: http://www.loc.gov/standards/iso639-2/php/code_list.php ")}
+          <language>{languageCode}</language>
           <copyright>None</copyright>
 
           <lastBuildDate>
@@ -169,14 +211,22 @@ case class Podcast(val title: String, val description: String,
 
 
           {Comment("Category fields.")}
-          <itunes:explicit>No</itunes:explicit>
-          <itunes:category text="Education">
-          </itunes:category>
+          {Comment("itunes:explicit: Valid values: Yes or No. If a tag isn’t included, the content will not be considered explicit.")}
+          {if (isExplicitYesNo.isDefined)
+          <itunes:explicit>
+            {isExplicitYesNo.get}
+          </itunes:explicit>
+
+        Comment("Only certain categories are valid, see: https://support.google.com/googleplay/podcasts/answer/6260341#rpt for Google Play and https://www.seriouslysimplepodcasting.com/itunes-podcast-category-list/ for ITunes.")}
+          {
+          categories.map(category => <itunes:category text={category}/>)
+          }
           <itunes:keywords>
             {keywords.mkString(",")}
-          </itunes:keywords>{items.map(_.getNode())}
-        </channel>
+          </itunes:keywords>
 
+          {items.map(_.getNode())}
+        </channel>
       </rss>
     return feed
   }
@@ -187,7 +237,7 @@ object podcastTest {
 
   def main(args: Array[String]): Unit = {
     val podcastItems = Seq(PodcastItem(title = "xyz", enclosureUrl = "http://enclosure.mp3", lengthInSecs = 601))
-    val podcast = new Podcast(title = "संस्कृतशास्त्राणि: shastras in sanskrit", description = "", publisherEmail = "sanskrit-programmers@googlegroups.com", items = podcastItems, imageUrl = "https://i.imgur.com/IsfZpd0.jpg")
+    val podcast = new Podcast(title = "संस्कृतशास्त्राणि: shastras in sanskrit", description = "", publisherEmail = "sanskrit-programmers@googlegroups.com", items = podcastItems, imageUrl = "https://i.imgur.com/IsfZpd0.jpg", languageCode = "en")
     print(podcast.getNode())
   }
 }

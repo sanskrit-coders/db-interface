@@ -18,11 +18,15 @@ case class FileInfo(
                  title: Option[String],
                  album: Option[String]
                ) {
-  def toPodcastItem(itemMetadata: ItemMetadata,  publishTime: Long): PodcastItem = {
+  def toPodcastItem(itemMetadata: ItemMetadata,  publishTime: Option[Long] = None, ordinal: Option[Int] = None): PodcastItem = {
     val albumTag = album.getOrElse("") + " "
+    var timeSecs1970 = mtime.getOrElse("0").toLong
+    if (publishTime.isDefined) {
+      timeSecs1970 = publishTime.get
+    }
     val finalTitle = albumTag.trim +  title.getOrElse(name.get)
     PodcastItem(title = finalTitle, enclosureUrl = s"https://archive.org/download/${itemMetadata.identifier}/${name.get}",
-      lengthInSecs = length.getOrElse("10").toFloat.toInt, timeSecs1970 = publishTime )
+      lengthInSecs = length.getOrElse("10").toFloat.toInt, timeSecs1970 = timeSecs1970, ordinal=ordinal )
   }
 
 }
