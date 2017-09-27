@@ -29,6 +29,8 @@ object timeHelper {
 //  Feed validator: http://www.feedvalidator.org/check.cgi?url=http%3A%2F%2Ffeeds.feedburner.com%2FSS-bAlamodinI
 //  Template: https://resourcecenter.odee.osu.edu/digital-media-production/how-write-podcast-rss-xml
 //  Best practices: https://github.com/gpodder/podcast-feed-best-practice/blob/master/podcast-feed-best-practice.md
+// ItunesU guide: http://mediaserver.sewanee.edu/itunesu/docs/iTunesUAdministrationGuide.pdf
+
 case class PodcastItem(val title: String, val enclosureUrl: String, val lengthInSecs: Int, var description: String = null, var shortDescription: String = null, val timeUsecs1970: Long = 0,
                        val itunesCategoryCode: Long = 107) {
   val log = LoggerFactory.getLogger(this.getClass)
@@ -84,7 +86,7 @@ case class Podcast(val title: String, val description: String,
 
   def getNode(): Node = {
     var feed =
-      <rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
+      <rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:itunesu="http://www.itunesu.com/feed" version="2.0">
         <channel>
 
           <title>
