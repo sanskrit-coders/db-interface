@@ -199,6 +199,7 @@ case class Podcast(val title: String, val description: String,
             </itunes:email>
           </itunes:owner>
 
+          {Comment("Image must be square and over 1200 x 1200 for Google Play, and over 1400 x 1400 for ITunes.")}
           <image>
             <url>{imageUrl}</url>
             <title>{title}</title>
@@ -211,13 +212,12 @@ case class Podcast(val title: String, val description: String,
 
 
           {Comment("Category fields.")}
-          {Comment("itunes:explicit: Valid values: Yes or No. If a tag isn’t included, the content will not be considered explicit.")}
+          {Comment("itunes:explicit: Valid values: Yes or No. Google Play says: If a tag isn’t included, the content will not be considered explicit. ITunes requires this.")}
           {if (isExplicitYesNo.isDefined)
-          <itunes:explicit>
-            {isExplicitYesNo.get}
-          </itunes:explicit>
+          <itunes:explicit> {isExplicitYesNo.get} </itunes:explicit>
+          }
 
-        Comment("Only certain categories are valid, see: https://support.google.com/googleplay/podcasts/answer/6260341#rpt for Google Play and https://www.seriouslysimplepodcasting.com/itunes-podcast-category-list/ for ITunes.")}
+        {Comment("Only certain categories are valid, see: https://support.google.com/googleplay/podcasts/answer/6260341#rpt for Google Play and https://www.seriouslysimplepodcasting.com/itunes-podcast-category-list/ for ITunes.")}
           {
           categories.map(category => <itunes:category text={category}/>)
           }
@@ -237,7 +237,7 @@ object podcastTest {
 
   def main(args: Array[String]): Unit = {
     val podcastItems = Seq(PodcastItem(title = "xyz", enclosureUrl = "http://enclosure.mp3", lengthInSecs = 601))
-    val podcast = new Podcast(title = "संस्कृतशास्त्राणि: shastras in sanskrit", description = "", publisherEmail = "sanskrit-programmers@googlegroups.com", items = podcastItems, imageUrl = "https://i.imgur.com/IsfZpd0.jpg", languageCode = "en")
+    val podcast = new Podcast(title = "संस्कृतशास्त्राणि: shastras in sanskrit", description = "", publisherEmail = "sanskrit-programmers@googlegroups.com", items = podcastItems, imageUrl = "https://i.imgur.com/dQjPQYi.jpg", languageCode = "en")
     print(podcast.getNode())
   }
 }

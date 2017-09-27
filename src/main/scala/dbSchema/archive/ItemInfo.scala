@@ -16,7 +16,7 @@ case class ItemInfo( created: Option[Double],
                      workable_servers: Option[List[String]]
                    ) {
 
-  def toPodcast(fileExtensions: Seq[String], publisherEmail: String, imageUrl: String = "https://i.imgur.com/IsfZpd0.jpg", languageCode: String = "en", categories: Seq[String], isExplicitYesNo: Option[String] = None): Podcast = {
+  def toPodcast(fileExtensions: Seq[String], publisherEmail: String, imageUrl: String, languageCode: String = "en", categories: Seq[String], isExplicitYesNo: Option[String] = None): Podcast = {
     val url = s"https://archive.org/details/${metadata.identifier}"
     val itemFiles = files.filter(fileInfo => {
       val fileName = fileInfo.name.get
