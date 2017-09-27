@@ -57,7 +57,9 @@ case class PodcastItem(val title: String, val enclosureUrl: String, val lengthIn
         <description>
           {description}
         </description>
-        <itunes:summary>Duplicate of above verbose description.</itunes:summary>
+        <itunes:summary>
+          {description}
+        </itunes:summary>
         <itunes:subtitle>
           {shortDescription}
         </itunes:subtitle>
@@ -66,6 +68,8 @@ case class PodcastItem(val title: String, val enclosureUrl: String, val lengthIn
         <guid>
           {enclosureUriEncoded}
         </guid>
+
+
         {Comment("Expected format: H:MM:SS")}
         <itunes:duration>
         {f"${lengthInSecs / 3600 }%02d:${lengthInSecs / 60   % 60}%02d:${lengthInSecs % 60}%02d"}
@@ -79,7 +83,8 @@ case class PodcastItem(val title: String, val enclosureUrl: String, val lengthIn
 }
 
 case class Podcast(val title: String, val description: String,
-                   val website_url: String = "http://archive.org",
+                   val imageUrl: String,
+                   val websiteUrl: Option[String] = None,
                    val subtitle: Option[String] = None,
                    var publisher: Option[String] = None, var author: Option[String] = None, val publisherEmail: String,
                    val keywords: Seq[String] = Seq(),
@@ -111,16 +116,19 @@ case class Podcast(val title: String, val description: String,
           </title>
           {Comment("Various description fields.")}
           <description>
-          {description}
-        </description>
+            {description}
+          </description>
           <itunes:subtitle>
             {subtitle.getOrElse(title)}
           </itunes:subtitle>
           <itunes:summary>
             {description}
-          </itunes:summary>{Comment("The podcast website.")}<link>
-          {website_url}
-        </link>
+          </itunes:summary>
+          {Comment("The podcast website.")}
+          {
+          if (websiteUrl.isDefined)
+          <link> {websiteUrl}</link>
+          }
 
           <language>en-us</language>
           <copyright>None</copyright>
@@ -130,9 +138,11 @@ case class Podcast(val title: String, val description: String,
           </lastBuildDate>
           <pubDate>
             {timeHelper.getTimeRfc2822()}
-          </pubDate>{Comment("Publisher details.")}<webMaster>
-          {publisher.get}
-        </webMaster>
+          </pubDate>
+          {Comment("Publisher details.")}
+          <webMaster>
+            {publisher.get}
+          </webMaster>
           <itunes:author>
             {author.get}
           </itunes:author>
@@ -143,7 +153,21 @@ case class Podcast(val title: String, val description: String,
             <itunes:email>
               {publisherEmail}
             </itunes:email>
-          </itunes:owner>{Comment("Category fields.")}<itunes:explicit>No</itunes:explicit>
+          </itunes:owner>
+
+          <image>
+            <url>{imageUrl}</url>
+            <title>{title}</title>
+            {
+            if (websiteUrl.isDefined)
+              <link> {websiteUrl}</link>
+            }
+          </image>
+          <itunes:image href={imageUrl} />
+
+
+          {Comment("Category fields.")}
+          <itunes:explicit>No</itunes:explicit>
           <itunes:category text="Education">
           </itunes:category>
           <itunes:keywords>
@@ -161,7 +185,7 @@ object podcastTest {
 
   def main(args: Array[String]): Unit = {
     val podcastItems = Seq(PodcastItem(title = "xyz", enclosureUrl = "http://enclosure.mp3", lengthInSecs = 601))
-    val podcast = new Podcast(title = "संस्कृतशास्त्राणि: shastras in sanskrit", description = "", publisherEmail = "sanskrit-programmers@googlegroups.com", items = podcastItems)
+    val podcast = new Podcast(title = "संस्कृतशास्त्राणि: shastras in sanskrit", description = "", publisherEmail = "sanskrit-programmers@googlegroups.com", items = podcastItems, imageUrl = "https://i.imgur.com/yAR8bWh.png")
     print(podcast.getNode())
   }
 }
