@@ -127,7 +127,7 @@ case class Podcast(val title: String, val description: String,
           {Comment("The podcast website.")}
           {
           if (websiteUrl.isDefined)
-          <link> {websiteUrl}</link>
+          <link> {websiteUrl.get}</link>
           }
 
           <language>en-us</language>
@@ -160,7 +160,7 @@ case class Podcast(val title: String, val description: String,
             <title>{title}</title>
             {
             if (websiteUrl.isDefined)
-              <link> {websiteUrl}</link>
+              <link> {websiteUrl.get}</link>
             }
           </image>
           <itunes:image href={imageUrl} />
