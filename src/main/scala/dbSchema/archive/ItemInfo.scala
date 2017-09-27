@@ -14,14 +14,14 @@ case class ItemInfo(
                      uniq: Option[Double],
                      workable_servers: Option[List[String]]
                    ) {
-  def toPodcast(audioFileExtension: String): Podcast = {
+  def toPodcast(audioFileExtension: String, publisherEmail: String): Podcast = {
     val url = s"https://archive.org/details/${metadata.identifier}"
     val itemFiles = files.filter(fileInfo => fileInfo.name.get.endsWith(s".$audioFileExtension"))
     val itemPublishTimes = itemFiles.zipWithIndex.map(created.getOrElse[Double](0).toLong + _._2)
     var items = itemFiles.zip(itemPublishTimes).map( {case (itemFile: FileInfo, publishTime: Long) => itemFile.toPodcastItem(itemMetadata = metadata, publishTime = publishTime)})
     Podcast(title = metadata.title.getOrElse(metadata.identifier), description = s"A podcast automatically created from the archive item: $url, with description: ${metadata.description.getOrElse("")}",
-      website_url = url, publisher = metadata.uploader,
-      publisherEmail = "sanskrit-programmers@googlegroups.com", keywords = metadata.subject.getOrElse(Seq()), items=items
+      website_url = url, author = metadata.uploader,
+      publisherEmail = publisherEmail, keywords = metadata.subject.getOrElse(Seq()), items=items
     )
   }
 

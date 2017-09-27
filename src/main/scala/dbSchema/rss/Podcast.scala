@@ -81,13 +81,17 @@ case class PodcastItem(val title: String, val enclosureUrl: String, val lengthIn
 case class Podcast(val title: String, val description: String,
                    val website_url: String = "http://archive.org",
                    val subtitle: Option[String] = None,
-                   var publisher: Option[String] = None, val publisherEmail: String,
+                   var publisher: Option[String] = None, var author: Option[String] = None, val publisherEmail: String,
                    val keywords: Seq[String] = Seq(),
                    val items: Seq[PodcastItem], val feedUrl:Option[String] = None) {
   val log = LoggerFactory.getLogger(this.getClass)
 
   if (publisher == None) {
     publisher = Some(publisherEmail)
+  }
+
+  if (author == None) {
+    author = publisher
   }
 
   def add(n: Node, c: Node): Node = n match {
@@ -130,7 +134,7 @@ case class Podcast(val title: String, val description: String,
           {publisher.get}
         </webMaster>
           <itunes:author>
-            {publisher.get}
+            {author.get}
           </itunes:author>
           <itunes:owner>
             <itunes:name>
