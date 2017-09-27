@@ -31,8 +31,10 @@ object timeHelper {
 //    https://validator.w3.org/feed/
 //    http://www.feedvalidator.org/check.cgi?url=http%3A%2F%2Ffeeds.feedburner.com%2FSS-bAlamodinI
 //  Template: https://resourcecenter.odee.osu.edu/digital-media-production/how-write-podcast-rss-xml
+//
 //  Best practices: https://github.com/gpodder/podcast-feed-best-practice/blob/master/podcast-feed-best-practice.md
 // ItunesU guide: http://mediaserver.sewanee.edu/itunesu/docs/iTunesUAdministrationGuide.pdf
+// Google Play required tags: https://support.google.com/googleplay/podcasts/answer/6260341#rpt
 
 case class PodcastItem(val title: String, val enclosureUrl: String, val lengthInSecs: Int, var description: String = null, var shortDescription: String = null, val timeSecs1970: Long = 0,
                        val itunesCategoryCode: Long = 107) {
@@ -185,7 +187,7 @@ object podcastTest {
 
   def main(args: Array[String]): Unit = {
     val podcastItems = Seq(PodcastItem(title = "xyz", enclosureUrl = "http://enclosure.mp3", lengthInSecs = 601))
-    val podcast = new Podcast(title = "संस्कृतशास्त्राणि: shastras in sanskrit", description = "", publisherEmail = "sanskrit-programmers@googlegroups.com", items = podcastItems, imageUrl = "https://i.imgur.com/yAR8bWh.png")
+    val podcast = new Podcast(title = "संस्कृतशास्त्राणि: shastras in sanskrit", description = "", publisherEmail = "sanskrit-programmers@googlegroups.com", items = podcastItems, imageUrl = "https://i.imgur.com/IsfZpd0.jpg")
     print(podcast.getNode())
   }
 }

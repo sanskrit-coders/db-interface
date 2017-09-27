@@ -13,7 +13,7 @@ case class ItemInfo( created: Option[Double],
                      uniq: Option[Double],
                      workable_servers: Option[List[String]]
                    ) {
-  def toPodcast(audioFileExtension: String, publisherEmail: String, imageUrl: String = "https://i.imgur.com/yAR8bWh.png"): Podcast = {
+  def toPodcast(audioFileExtension: String, publisherEmail: String, imageUrl: String = "https://i.imgur.com/IsfZpd0.jpg"): Podcast = {
     val url = s"https://archive.org/details/${metadata.identifier}"
     val itemFiles = files.filter(fileInfo => fileInfo.name.get.endsWith(s".$audioFileExtension"))
     val itemPublishTimes = itemFiles.zipWithIndex.map(created.getOrElse[Double](0).toLong + _._2)
