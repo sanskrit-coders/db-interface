@@ -126,6 +126,7 @@ case class PodcastItem(val title: String, val enclosureUrl: String, val lengthIn
 case class Podcast(val title: String, val description: String,
                    val imageUrl: String, val languageCode: String,
                    val websiteUrl: Option[String] = None,
+                   val copyright: Option[String] = None,
                    val subtitle: Option[String] = None,
                    var publisher: Option[String] = None, var author: Option[String] = None, val publisherEmail: String,
                    val keywords: Seq[String] = Seq(),
@@ -175,7 +176,11 @@ case class Podcast(val title: String, val description: String,
 
           {Comment("The language should be specified according to RFC 3066, RFC 4647 and RFC 5646. List: http://www.loc.gov/standards/iso639-2/php/code_list.php ")}
           <language>{languageCode}</language>
-          <copyright>None</copyright>
+          {
+          if (copyright.isDefined)
+            <copyright>{copyright.get}</copyright>
+          }
+
 
           <lastBuildDate>
             {timeHelper.getTimeRfc2822()}
