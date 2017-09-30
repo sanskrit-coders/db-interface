@@ -74,7 +74,10 @@ case class PodcastItem(val title: String, val enclosureUrl: String, val lengthIn
           {enclosureUriEncoded}
         </guid>
 
-        {Comment("'The <itunes:order> tag can be used to override the default ordering of episodes on the iTunes Store by populating it with the number value in which you would like the episode to appear. For example, if you would like an <item> to appear as the first episode of the podcast, you would populate the <itunes:order> tag with “1.” If conflicting order values are present in multiple episodes, the store will order by <pubDate>.'")}
+        {Comment("'The <itunes:order> tag can be used to override the default ordering of episodes on the iTunes Store by populating it with the number value in which you would like the episode to appear. For example, if you would like an <item> to appear as the first episode of the podcast, you would populate the <itunes:order> tag with “1.” If conflicting order values are present in multiple episodes, the store will order by <pubDate>.' " +
+        "But itunes itself doesnt seem to respect it in the podcast submission page! Same with several podcast players. " +
+        "Also, podcast players like Doggcatcher show episodes in the oldest-first order, which is suboptimal. " +
+        "Conclusion : use date to set order.")}
         {if (ordinal.isDefined)
         <itunes:order> {ordinal.get} </itunes:order>
         }
