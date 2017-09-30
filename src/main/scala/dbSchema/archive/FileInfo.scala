@@ -22,7 +22,7 @@ case class FileInfo(
     val albumTag = album.getOrElse("") + " "
     var timeSecs1970 = mtime.getOrElse("0").toLong
     if (publishTime.isDefined) {
-      timeSecs1970 = publishTime.get
+      timeSecs1970 = publishTime.get + ordinal.getOrElse(0)
     }
     val finalTitle = albumTag.trim +  title.getOrElse(name.get)
     PodcastItem(title = finalTitle, enclosureUrl = s"https://archive.org/download/${itemMetadata.identifier}/${name.get}",

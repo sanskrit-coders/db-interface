@@ -22,13 +22,14 @@ case class ItemInfo( created: Option[Double],
       val fileName = fileInfo.name.get
       fileName.contains(".") && fileExtensions.contains(fileName.drop(fileName.lastIndexOf('.')).replace(".", ""))
     })
-    val itemPublishTimes = itemFiles.zipWithIndex.map(created.getOrElse[Double](0).toLong + _._2)
-    var items = itemFiles.zipWithIndex.map( {case (itemFile: FileInfo, index: Int) => itemFile.toPodcastItem(itemMetadata = metadata, ordinal = Some(index))})
+
+    val itemPublishTime = metadata.getModificationTime1970Secs
+    var items = itemFiles.zipWithIndex.map( {case (itemFile: FileInfo, index: Int) => itemFile.toPodcastItem(itemMetadata = metadata, publishTime = itemPublishTime, ordinal = Some(index))})
 
 
     // Archive items seem to be available under variants of the Creative Commons license, chosen at upload-time. (Deduced from seeing https://archive.org/editxml.php?type=audio&edit_item=CDAC-tArkShya-shAstra-viShayaka-bhAShaNAni )
     Podcast(title = metadata.title.getOrElse(metadata.identifier), description = s"A podcast created using https://github.com/vedavaapi/scala-akka-http-server from the archive item: $url, with description:\n${metadata.description.getOrElse("")}.",
-      websiteUrl = Some(url), languageCode = languageCode, imageUrl =imageUrl, author = metadata.uploader, categories = categories,
+      websiteUrl = Some(url), languageCode = languageCode, imageUrl =imageUrl, author = metadata.uploader, categories = categories, timeSecs1970 = itemPublishTime,
       publisherEmail = publisherEmail, keywords = metadata.subject.getOrElse(Seq()), items=items, isExplicitYesNo=isExplicitYesNo
     )
   }

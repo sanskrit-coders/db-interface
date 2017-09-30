@@ -128,7 +128,7 @@ case class Podcast(val title: String, val description: String,
                    val websiteUrl: Option[String] = None,
                    val copyright: Option[String] = None,
                    val subtitle: Option[String] = None,
-                   var publisher: Option[String] = None, var author: Option[String] = None, val publisherEmail: String,
+                   var publisher: Option[String] = None, var author: Option[String] = None, val publisherEmail: String, timeSecs1970: Option[Long] = None,
                    val keywords: Seq[String] = Seq(),
                    val items: Seq[PodcastItem], val feedUrl:Option[String] = None,
                    val isExplicitYesNo: Option[String] = None, val categories: Seq[String] = Seq("Society & Culture")) {
@@ -183,10 +183,10 @@ case class Podcast(val title: String, val description: String,
 
 
           <lastBuildDate>
-            {timeHelper.getTimeRfc2822()}
+            {timeHelper.getTimeRfc2822(timeSecs1970.getOrElse(0))}
           </lastBuildDate>
           <pubDate>
-            {timeHelper.getTimeRfc2822()}
+            {timeHelper.getTimeRfc2822(timeSecs1970.getOrElse(0))}
           </pubDate>
           {Comment("Publisher details.")}
           <webMaster>
