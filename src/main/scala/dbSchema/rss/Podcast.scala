@@ -100,6 +100,7 @@ case class PodcastItem(val title: String, val enclosureUrl: String, val lengthIn
 /**
   *
   * General References:
+  * https://cyber.harvard.edu/rss/rss.html
   * Example: view-source:http://feeds.feedburner.com/SS-bAlamodinI
   *
   * Feed validators:
@@ -220,9 +221,9 @@ case class Podcast(val title: String, val description: String,
 
 
           {Comment("Category fields.")}
-          {Comment("itunes:explicit: Valid values: Yes or No. Google Play says: If a tag isn’t included, the content will not be considered explicit. ITunes requires this.")}
+          {Comment("itunes:explicit: Valid values: yes or no or clean. Google Play says: If a tag isn’t included, the content will not be considered explicit. ITunes requires this.")}
           {if (isExplicitYesNo.isDefined)
-          <itunes:explicit> {isExplicitYesNo.get} </itunes:explicit>
+          <itunes:explicit>{isExplicitYesNo.get}</itunes:explicit>
           }
 
         {Comment("Only certain categories are valid, see: https://support.google.com/googleplay/podcasts/answer/6260341#rpt for Google Play and https://www.seriouslysimplepodcasting.com/itunes-podcast-category-list/ for ITunes.")}
