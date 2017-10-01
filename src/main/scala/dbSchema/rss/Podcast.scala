@@ -100,18 +100,21 @@ case class PodcastItem(val title: String, val enclosureUrl: String, val lengthIn
 /**
   *
   * General References:
+  *
   * https://cyber.harvard.edu/rss/rss.html
+  * Best practices: https://github.com/gpodder/podcast-feed-best-practice/blob/master/podcast-feed-best-practice.md
+  * ItunesU guide: http://mediaserver.sewanee.edu/itunesu/docs/iTunesUAdministrationGuide.pdf
+  * Google Play required tags: https://support.google.com/googleplay/podcasts/answer/6260341#rpt
+  *
+  *
+  * Template: https://resourcecenter.odee.osu.edu/digital-media-production/how-write-podcast-rss-xml
   * Example: view-source:http://feeds.feedburner.com/SS-bAlamodinI
   *
   * Feed validators:
   * https://validator.w3.org/feed/
   * http://www.feedvalidator.org/check.cgi?url=http%3A%2F%2Ffeeds.feedburner.com%2FSS-bAlamodinI
-  * Template: https://resourcecenter.odee.osu.edu/digital-media-production/how-write-podcast-rss-xml
-
-  * Best practices: https://github.com/gpodder/podcast-feed-best-practice/blob/master/podcast-feed-best-practice.md
-  * ItunesU guide: http://mediaserver.sewanee.edu/itunesu/docs/iTunesUAdministrationGuide.pdf
-  * Google Play required tags: https://support.google.com/googleplay/podcasts/answer/6260341#rpt
-
+  * https://podba.se/validate/?url=http://vedavaapi.org:9090/podcasts/v1/archiveItems/shaiva_tantra_mt?publisherEmail=podcast-bhaaratii%40googlegroups.com&languageCode=en&categoriesCsv=Society%20%26%20Culture&imageUrl=https%3A%2F%2Fi.imgur.com%2FdQjPQYi.jpg&isExplicitYesNo=no
+  *
   * @param title
   * @param description
   * @param imageUrl

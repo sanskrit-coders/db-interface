@@ -10,6 +10,7 @@ case class ItemMetadata(
                      title: Option[String],
                      publicdate: Option[String],
                      uploader: Option[String],
+                     creator: Option[String],
                      addeddate: Option[String],
                      curation: Option[String],
                      backup_location: Option[String]
