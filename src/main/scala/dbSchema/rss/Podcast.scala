@@ -48,7 +48,8 @@ case class PodcastItem(val title: String, val enclosureUrl: String, val lengthIn
     shortDescription = description.substring(0, math.min(150, description.length - 1))
   }
 
-  val enclosureUriEncoded = new URI(enclosureUrl.replaceFirst("://.+", ""), enclosureUrl.replaceFirst(".+://", "//"), null)
+  // Shorter constructors mess up on certain URI-s.
+  val enclosureUriFinal = new URI(enclosureUrl.replaceFirst("://.+", "") /*scheme*/, enclosureUrl.replaceFirst(".+://", "").replaceFirst("/.+", "") /*host*/, enclosureUrl.replaceFirst(".+://", "").replaceFirst("[^/]+/", "/") /* path */, null).toASCIIString
 
   def getNode(): Node = {
     val feed =
@@ -66,26 +67,30 @@ case class PodcastItem(val title: String, val enclosureUrl: String, val lengthIn
           {shortDescription}
         </itunes:subtitle>
 
-        {Comment("iTunesU Category Codes: http://sitemanager.itunes.apple.com/help/#itu337EEAE0-035A-4660-B53D-46A13A7721E5")}
+        {
+        // "iTunesU Category Codes: http://sitemanager.itunes.apple.com/help/#itu337EEAE0-035A-4660-B53D-46A13A7721E5")
+        }
         {if (itunesCategoryCode.isDefined)
           <itunesu:category itunesu:code={f"$itunesCategoryCode"}/>
         }
         <guid>
-          {enclosureUriEncoded}
+          {enclosureUriFinal}
         </guid>
 
-        {Comment("'The <itunes:order> tag can be used to override the default ordering of episodes on the iTunes Store by populating it with the number value in which you would like the episode to appear. For example, if you would like an <item> to appear as the first episode of the podcast, you would populate the <itunes:order> tag with “1.” If conflicting order values are present in multiple episodes, the store will order by <pubDate>.' " +
+        {/*
+        "'The <itunes:order> tag can be used to override the default ordering of episodes on the iTunes Store by populating it with the number value in which you would like the episode to appear. For example, if you would like an <item> to appear as the first episode of the podcast, you would populate the <itunes:order> tag with “1.” If conflicting order values are present in multiple episodes, the store will order by <pubDate>.' " +
         "But itunes itself doesnt seem to respect it in the podcast submission page! Same with several podcast players. " +
         "Also, podcast players like Doggcatcher show episodes in the oldest-first order, which is suboptimal. " +
-        "Conclusion : use date to set order.")}
+        "Conclusion : use date to set order."*/
+        }
         {if (ordinal.isDefined)
         <itunes:order> {ordinal.get} </itunes:order>
         }
 
 
-      <enclosure url={f"$enclosureUriEncoded"} type="audio/mpeg" length="1"/>
+      <enclosure url={f"$enclosureUriFinal"} type="audio/mpeg" length="1"/>
 
-        {Comment("Expected format: H:MM:SS")}
+        {/*Comment("Expected format: H:MM:SS")*/}
         <itunes:duration>
         {f"${lengthInSecs / 3600 }%02d:${lengthInSecs / 60   % 60}%02d:${lengthInSecs % 60}%02d"}
       </itunes:duration>
@@ -157,7 +162,7 @@ case class Podcast(val title: String, val description: String,
     // XML encoding happens automatically when the node is rendered, no need to specially encode.
     var feed =
       <rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:itunesu="http://www.itunesu.com/feed" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
-        {Comment("The namespace definitions point to non-existent dtd-s and online validators complain, but that's fine. Can't help it.")}
+        {/*"The namespace definitions point to non-existent dtd-s and online validators complain, but that's fine. Can't help it."*/}
 
         <channel>
           {if (feedUrl.isDefined) <atom:link href={f"${feedUrl.get}"} rel="self" type="application/rss+xml" />}
@@ -181,7 +186,7 @@ case class Podcast(val title: String, val description: String,
           <link> {websiteUrl.get}</link>
           }
 
-          {Comment("The language should be specified according to RFC 3066, RFC 4647 and RFC 5646. List: http://www.loc.gov/standards/iso639-2/php/code_list.php ")}
+          {/*"The language should be specified according to RFC 3066, RFC 4647 and RFC 5646. List: http://www.loc.gov/standards/iso639-2/php/code_list.php "*/}
           <language>{languageCode}</language>
           {
           if (copyright.isDefined)
@@ -211,7 +216,7 @@ case class Podcast(val title: String, val description: String,
             </itunes:email>
           </itunes:owner>
 
-          {Comment("Image must be square and over 1200 x 1200 for Google Play, and over 1400 x 1400 for ITunes.")}
+          {/*"Image must be square and over 1200 x 1200 for Google Play, and over 1400 x 1400 for ITunes."*/}
           <image>
             <url>{imageUrl}</url>
             <title>{title}</title>
@@ -223,13 +228,13 @@ case class Podcast(val title: String, val description: String,
           <itunes:image href={imageUrl} />
 
 
-          {Comment("Category fields.")}
-          {Comment("itunes:explicit: Valid values: yes or no or clean. Google Play says: If a tag isn’t included, the content will not be considered explicit. ITunes requires this.")}
+          {/*"Category fields."*/}
+          {/*"itunes:explicit: Valid values: yes or no or clean. Google Play says: If a tag isn’t included, the content will not be considered explicit. ITunes requires this."*/}
           {if (isExplicitYesNo.isDefined)
           <itunes:explicit>{isExplicitYesNo.get}</itunes:explicit>
           }
 
-        {Comment("Only certain categories are valid, see: https://support.google.com/googleplay/podcasts/answer/6260341#rpt for Google Play and https://www.seriouslysimplepodcasting.com/itunes-podcast-category-list/ for ITunes.")}
+        {/*"Only certain categories are valid, see: https://support.google.com/googleplay/podcasts/answer/6260341#rpt for Google Play and https://www.seriouslysimplepodcasting.com/itunes-podcast-category-list/ for ITunes."*/}
           {
           categories.map(category => <itunes:category text={category}/>)
           }

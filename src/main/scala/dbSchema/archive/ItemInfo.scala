@@ -2,6 +2,7 @@ package dbSchema.archive
 
 import dbSchema.rss.Podcast
 
+// Example data: http://jsoneditoronline.org/?id=e031ab3cecf3cd6e0891eb9f303cd963
 case class ItemInfo( created: Option[Double],
                      d1: Option[String],
                      dir: Option[String],
