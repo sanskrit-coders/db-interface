@@ -27,7 +27,7 @@ case class FileInfo(
     val finalTitle = albumTag.trim +  title.getOrElse(name.get)
 
     // Not passing , ordinal=ordinal below: see PodcastItem comments for reasons.
-    PodcastItem(title = finalTitle, enclosureUrl = s"https://archive.org/download/${itemMetadata.identifier}/${name.get}",
+    PodcastItem(title = finalTitle, enclosureUrlUnencoded = s"https://archive.org/download/${itemMetadata.identifier}/${name.get}",
       lengthInSecs = length.getOrElse("10").toFloat.toInt, timeSecs1970 = timeSecs1970)
   }
 

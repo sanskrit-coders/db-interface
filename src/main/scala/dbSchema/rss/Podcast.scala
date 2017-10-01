@@ -29,14 +29,14 @@ object timeHelper {
   * See comments associated with Podcast class for some common references.
   *
   * @param title
-  * @param enclosureUrl
+  * @param enclosureUrlUnencoded
   * @param lengthInSecs
   * @param description
   * @param shortDescription
   * @param timeSecs1970
   * @param itunesCategoryCode
   */
-case class PodcastItem(val title: String, val enclosureUrl: String, val lengthInSecs: Int, var description: String = null, var shortDescription: String = null, val timeSecs1970: Long = 0,
+case class PodcastItem(val title: String, val enclosureUrlUnencoded: String, val lengthInSecs: Int, var description: String = null, var shortDescription: String = null, val timeSecs1970: Long = 0,
                        val itunesCategoryCode: Option[Int] = None, val ordinal: Option[Int] = None) {
   val log = LoggerFactory.getLogger(this.getClass)
   if (description == null) {
@@ -49,7 +49,7 @@ case class PodcastItem(val title: String, val enclosureUrl: String, val lengthIn
   }
 
   // Shorter constructors mess up on certain URI-s.
-  val enclosureUriFinal = new URI(enclosureUrl.replaceFirst("://.+", "") /*scheme*/, enclosureUrl.replaceFirst(".+://", "").replaceFirst("/.+", "") /*host*/, enclosureUrl.replaceFirst(".+://", "").replaceFirst("[^/]+/", "/") /* path */, null).toASCIIString
+  val enclosureUriFinal = new URI(enclosureUrlUnencoded.replaceFirst("://.+", "") /*scheme*/, enclosureUrlUnencoded.replaceFirst(".+://", "").replaceFirst("/.+", "") /*host*/, enclosureUrlUnencoded.replaceFirst(".+://", "").replaceFirst("[^/]+/", "/") /* path */, null).toASCIIString
 
   def getNode(): Node = {
     val feed =
@@ -253,7 +253,7 @@ object podcastTest {
   val log = LoggerFactory.getLogger(this.getClass)
 
   def main(args: Array[String]): Unit = {
-    val podcastItems = Seq(PodcastItem(title = "xyz", enclosureUrl = "http://enclosure.mp3", lengthInSecs = 601))
+    val podcastItems = Seq(PodcastItem(title = "xyz", enclosureUrlUnencoded = "http://enclosure.mp3", lengthInSecs = 601))
     val podcast = new Podcast(title = "संस्कृतशास्त्राणि: shastras in sanskrit", description = "", publisherEmail = "sanskrit-programmers@googlegroups.com", items = podcastItems, imageUrl = "https://i.imgur.com/dQjPQYi.jpg", languageCode = "en")
     print(podcast.getNode())
   }
