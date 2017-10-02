@@ -27,7 +27,7 @@ case class ItemInfo( created: Option[Double],
        val ordinal = if (useArchiveOrder) Some(index) else None
       itemFile.toPodcastItem(itemMetadata = metadata, publishTime = itemPublishTime, ordinal = ordinal)})
 
-    val author = if (metadata.creator.isDefined) metadata.creator else metadata.uploader
+    val author = if (metadata.creator.isDefined) metadata.creator else metadata.uploader.map(_.replaceFirst("@.+", ""))
     val titleFinal = if (title.isDefined) title.get else metadata.title.getOrElse(metadata.identifier)
 
     // Archive items seem to be available under variants of the Creative Commons license, chosen at upload-time. (Deduced from seeing https://archive.org/editxml.php?type=audio&edit_item=CDAC-tArkShya-shAstra-viShayaka-bhAShaNAni )
