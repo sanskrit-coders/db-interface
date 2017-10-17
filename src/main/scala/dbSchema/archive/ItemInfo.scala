@@ -15,7 +15,8 @@ case class ItemInfo( created: Option[Double],
                      workable_servers: Option[List[String]]
                    ) {
 
-  def getPodcastItems(filePattern: String, useArchiveOrder: Boolean = true, itemPublishTime: Option[Long]): List[PodcastItem] = {
+  def getPodcastItems(filePattern: String, useArchiveOrder: Boolean = true, itemPublishTime: Option[Long] = None): List[PodcastItem] = {
+    val itemPublishTime = if (useArchiveOrder) metadata.getModificationTime1970Secs() else None
     val itemFiles = files.filter(fileInfo => {
       val fileName = fileInfo.name.get
       fileName.matches(filePattern)
@@ -26,20 +27,16 @@ case class ItemInfo( created: Option[Double],
       itemFile.toPodcastItem(itemMetadata = metadata, publishTime = itemPublishTime, ordinal = ordinal)})
   }
 
-  def toPodcast(filePattern: String, publisherEmail: String, imageUrl: String, languageCode: String = "en", useArchiveOrder: Boolean = true, title: Option[String] = None, categories: Seq[String], isExplicitYesNo: Option[String] = None): Podcast = {
+  def toPodcast(filePattern: String, useArchiveOrder: Boolean = true, podcast: Podcast): Podcast = {
     val url = s"https://archive.org/details/${metadata.identifier}"
     val author = if (metadata.creator.isDefined) metadata.creator else metadata.uploader.map(_.replaceFirst("@.+", ""))
-    val itemPublishTime = if (useArchiveOrder) metadata.getModificationTime1970Secs() else None
 
-    val titleFinal = if (title.isDefined) title.get else metadata.title.getOrElse(metadata.identifier)
+    val titleFinal = if (podcast.title.isEmpty) metadata.title.getOrElse(metadata.identifier) else podcast.title
 
-    val items = getPodcastItems(filePattern=filePattern, useArchiveOrder = useArchiveOrder, itemPublishTime = itemPublishTime)
+    val items = getPodcastItems(filePattern=filePattern, useArchiveOrder = useArchiveOrder)
 
     // Archive items seem to be available under variants of the Creative Commons license, chosen at upload-time. (Deduced from seeing https://archive.org/editxml.php?type=audio&edit_item=CDAC-tArkShya-shAstra-viShayaka-bhAShaNAni )
-    Podcast(title = titleFinal, description = s"A podcast created using https://github.com/vedavaapi/scala-akka-http-server from the archive item: $url, with description:\n${metadata.description.getOrElse("")}.",
-      websiteUrl = Some(url), languageCode = languageCode, imageUrl =imageUrl, author = author, categories = categories, timeSecs1970 = itemPublishTime,
-      publisherEmail = publisherEmail, keywords = metadata.subject.getOrElse(Seq()), items=items, isExplicitYesNo=isExplicitYesNo
-    )
+    podcast.copy(title = titleFinal, description = s"A podcast created using https://github.com/vedavaapi/scala-akka-http-server from the archive item: $url, with description:\n${metadata.description.getOrElse("")}.", websiteUrl = Some(url), author = author,  timeSecs1970 = metadata.getModificationTime1970Secs(), keywords = metadata.subject.getOrElse(Seq()), items=items)
   }
 
 }

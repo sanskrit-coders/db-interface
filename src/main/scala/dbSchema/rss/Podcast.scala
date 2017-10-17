@@ -4,16 +4,16 @@ import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date}
 
-import org.slf4j.LoggerFactory
+import org.slf4j.{Logger, LoggerFactory}
 
 import scala.xml.{Comment, Elem, Node}
 
 object timeHelper {
-  val log = LoggerFactory.getLogger(this.getClass)
+  val log: Logger = LoggerFactory.getLogger(this.getClass)
 
   def getTimeRfc2822(timeSecs1970: Long = 0): String = {
     //    https://tools.ietf.org/html/rfc2822#section-3.3
-    val pattern = "EEE, dd MMM yyyy HH:mm:ss Z"
+    var pattern = "EEE, dd MMM yyyy HH:mm:ss Z"
     val format = new SimpleDateFormat(pattern)
     var time: Date = null
     if (timeSecs1970 == 0) {
@@ -36,9 +36,9 @@ object timeHelper {
   * @param timeSecs1970
   * @param itunesCategoryCode
   */
-case class PodcastItem(val title: String, val enclosureUrlUnencoded: String, val lengthInSecs: Int, var description: String = null, var shortDescription: String = null, val timeSecs1970: Long = 0,
-                       val itunesCategoryCode: Option[Int] = None, val ordinal: Option[Int] = None) {
-  val log = LoggerFactory.getLogger(this.getClass)
+case class PodcastItem(var title: String, var enclosureUrlUnencoded: String, var lengthInSecs: Int, var description: String = null, var shortDescription: String = null, var timeSecs1970: Long = 0,
+                       var itunesCategoryCode: Option[Int] = None, var ordinal: Option[Int] = None) {
+  private val log = LoggerFactory.getLogger(this.getClass)
   if (description == null) {
     description = title
   }
@@ -49,9 +49,9 @@ case class PodcastItem(val title: String, val enclosureUrlUnencoded: String, val
   }
 
   // Shorter constructors mess up on certain URI-s.
-  val enclosureUriFinal = new URI(enclosureUrlUnencoded.replaceFirst("://.+", "") /*scheme*/, enclosureUrlUnencoded.replaceFirst(".+://", "").replaceFirst("/.+", "") /*host*/, enclosureUrlUnencoded.replaceFirst(".+://", "").replaceFirst("[^/]+/", "/") /* path */, null).toASCIIString
+  private val enclosureUriFinal = new URI(enclosureUrlUnencoded.replaceFirst("://.+", "") /*scheme*/, enclosureUrlUnencoded.replaceFirst(".+://", "").replaceFirst("/.+", "") /*host*/, enclosureUrlUnencoded.replaceFirst(".+://", "").replaceFirst("[^/]+/", "/") /* path */, null).toASCIIString
 
-  def getNode(): Node = {
+  def getNode: Node = {
     val feed =
       <item>
         <title>
@@ -135,16 +135,17 @@ case class PodcastItem(val title: String, val enclosureUrlUnencoded: String, val
   * @param isExplicitYesNo
   * @param categories
   */
-case class Podcast(val title: String, val description: String,
-                   val imageUrl: String, val languageCode: String,
-                   val websiteUrl: Option[String] = None,
-                   val copyright: Option[String] = None,
-                   val subtitle: Option[String] = None,
-                   var publisher: Option[String] = None, var author: Option[String] = None, val publisherEmail: String, timeSecs1970: Option[Long] = None,
-                   val keywords: Seq[String] = Seq(),
-                   val items: Seq[PodcastItem], val feedUrl:Option[String] = None,
-                   val isExplicitYesNo: Option[String] = None, val categories: Seq[String] = Seq("Society & Culture")) {
-  val log = LoggerFactory.getLogger(this.getClass)
+//noinspection ScalaDocMissingParameterDescription
+case class Podcast(var title: String, var description: String,
+                   var imageUrl: String, var languageCode: String,
+                   var websiteUrl: Option[String] = None,
+                   var copyright: Option[String] = None,
+                   var subtitle: Option[String] = None,
+                   var publisher: Option[String] = None, var author: Option[String] = None, var publisherEmail: String, timeSecs1970: Option[Long] = None,
+                   var keywords: Seq[String] = Seq(),
+                   var items: Seq[PodcastItem], var feedUrl:Option[String] = None,
+                   var isExplicitYesNo: Option[String] = None, var categories: Seq[String] = Seq("Society & Culture")) {
+  private val log = LoggerFactory.getLogger(this.getClass)
 
   if (publisher == None) {
     publisher = Some(publisherEmail)
@@ -158,7 +159,7 @@ case class Podcast(val title: String, val description: String,
     case e: Elem => e.copy(child = e.child ++ c)
   }
 
-  def getNode(): Node = {
+  def getNode: Node = {
     // XML encoding happens automatically when the node is rendered, no need to specially encode.
     var feed =
       <rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:itunesu="http://www.itunesu.com/feed" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
@@ -245,7 +246,7 @@ case class Podcast(val title: String, val description: String,
 
           {
           // Some podcast players blithely follow feed order without rearranging.
-          items.sorted(Ordering.by((x: PodcastItem) => x.timeSecs1970).reverse).map(_.getNode())
+          items.sorted(Ordering.by((x: PodcastItem) => x.timeSecs1970).reverse).map(_.getNode)
           }
         </channel>
       </rss>
@@ -254,11 +255,11 @@ case class Podcast(val title: String, val description: String,
 }
 
 object podcastTest {
-  val log = LoggerFactory.getLogger(this.getClass)
+  private val log = LoggerFactory.getLogger(this.getClass)
 
   def main(args: Array[String]): Unit = {
     val podcastItems = Seq(PodcastItem(title = "xyz", enclosureUrlUnencoded = "http://enclosure.mp3", lengthInSecs = 601))
-    val podcast = new Podcast(title = "संस्कृतशास्त्राणि: shastras in sanskrit", description = "", publisherEmail = "sanskrit-programmers@googlegroups.com", items = podcastItems, imageUrl = "https://i.imgur.com/dQjPQYi.jpg", languageCode = "en")
-    print(podcast.getNode())
+    val podcast = Podcast(title = "संस्कृतशास्त्राणि: shastras in sanskrit", description = "", publisherEmail = "sanskrit-programmers@googlegroups.com", items = podcastItems, imageUrl = "https://i.imgur.com/dQjPQYi.jpg", languageCode = "en")
+    print(podcast.getNode)
   }
 }
