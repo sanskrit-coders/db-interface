@@ -141,7 +141,7 @@ case class Podcast(var title: String, var description: String,
                    var websiteUrl: Option[String] = None,
                    var copyright: Option[String] = None,
                    var subtitle: Option[String] = None,
-                   var publisher: Option[String] = None, var author: Option[String] = None, var publisherEmail: String, timeSecs1970: Option[Long] = None,
+                   var publisher: Option[String] = None, var author: Option[String] = None, var publisherEmail: String, var timeSecs1970: Option[Long] = None,
                    var keywords: Seq[String] = Seq(),
                    var items: Seq[PodcastItem], var feedUrl:Option[String] = None,
                    var isExplicitYesNo: Option[String] = None, var categories: Seq[String] = Seq("Society & Culture")) {
@@ -251,6 +251,22 @@ case class Podcast(var title: String, var description: String,
         </channel>
       </rss>
     return feed
+  }
+}
+
+object Podcast {
+  def merge(podcast1: Podcast, podcast2: Podcast): Podcast = {
+    val podcast = podcast1.copy()
+    podcast.timeSecs1970 = Some(Math.max(podcast1.timeSecs1970.getOrElse(0L), podcast2.timeSecs1970.getOrElse(0L)))
+    podcast.keywords = Seq.concat(podcast1.keywords, podcast2.keywords).distinct
+    podcast.categories = Seq.concat(podcast1.categories, podcast2.categories).distinct
+    podcast.author = Some(Seq(podcast1.author, podcast2.author).filterNot(_.isDefined).map(_.get).mkString(", "))
+    if (podcast1.isExplicitYesNo.contains("yes") || podcast2.isExplicitYesNo.contains("yes")) {
+      podcast.isExplicitYesNo = Some("yes")
+    }
+    podcast.items = Seq.concat(podcast1.items, podcast2.items)
+    // We deliberately don't merge title, description, subtitle, language, publisher
+    podcast
   }
 }
 

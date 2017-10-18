@@ -22,7 +22,7 @@ case class ItemInfo( created: Option[Double],
       fileName.matches(filePattern)
     })
 
-    itemFiles.zipWithIndex.map( {case (itemFile: FileInfo, index: Int) =>
+    itemFiles.sortBy(_.name.get).zipWithIndex.map( {case (itemFile: FileInfo, index: Int) =>
       val ordinal = if (useArchiveOrder) Some(index) else None
       itemFile.toPodcastItem(itemMetadata = metadata, publishTime = itemPublishTime, ordinal = ordinal)})
   }
