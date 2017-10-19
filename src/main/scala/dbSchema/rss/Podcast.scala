@@ -256,17 +256,24 @@ case class Podcast(var title: String, var description: String,
 
 object Podcast {
   def merge(podcast1: Podcast, podcast2: Podcast): Podcast = {
-    val podcast = podcast1.copy()
-    podcast.timeSecs1970 = Some(Math.max(podcast1.timeSecs1970.getOrElse(0L), podcast2.timeSecs1970.getOrElse(0L)))
-    podcast.keywords = Seq.concat(podcast1.keywords, podcast2.keywords).distinct
-    podcast.categories = Seq.concat(podcast1.categories, podcast2.categories).distinct
-    podcast.author = Some(Seq(podcast1.author, podcast2.author).filterNot(_.isDefined).map(_.get).mkString(", "))
-    if (podcast1.isExplicitYesNo.contains("yes") || podcast2.isExplicitYesNo.contains("yes")) {
-      podcast.isExplicitYesNo = Some("yes")
+    if (podcast1 == podcast2 || podcast2 == null) {
+      podcast1
     }
-    podcast.items = Seq.concat(podcast1.items, podcast2.items)
-    // We deliberately don't merge title, description, subtitle, language, publisher
-    podcast
+    if (podcast1 == null) {
+      podcast2
+    } else {
+      val podcast = podcast1.copy()
+      podcast.timeSecs1970 = Some(Math.max(podcast1.timeSecs1970.getOrElse(0L), podcast2.timeSecs1970.getOrElse(0L)))
+      podcast.keywords = Seq.concat(podcast1.keywords, podcast2.keywords).distinct
+      podcast.categories = Seq.concat(podcast1.categories, podcast2.categories).distinct
+      podcast.author = Some(Seq(podcast1.author, podcast2.author).filter(_.isDefined).map(_.get).flatMap(_.split(", ")).distinct.mkString(", "))
+      if (podcast1.isExplicitYesNo.contains("yes") || podcast2.isExplicitYesNo.contains("yes")) {
+        podcast.isExplicitYesNo = Some("yes")
+      }
+      podcast.items = Seq.concat(podcast1.items, podcast2.items)
+      // We deliberately don't merge title, description, subtitle, language, publisher
+      podcast
+    }
   }
 }
 
