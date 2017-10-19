@@ -22,8 +22,10 @@ case class FileInfo(
     val albumTag = album.getOrElse("") + " "
     var timeSecs1970 = mtime.getOrElse("0").toLong
     if (publishTime.isDefined) {
-      // doggcatcher only uses date, not time - http://www.doggcatcher.com/node/6804 !
-      timeSecs1970 = publishTime.get + 24*3600*ordinal.getOrElse(0)
+      // doggcatcher allegedly only uses date, not time - http://www.doggcatcher.com/node/6804 !
+      // So might need to do 24*3600 below.
+      val intervalBetweenItems = 1
+      timeSecs1970 = publishTime.get + intervalBetweenItems * ordinal.getOrElse(0)
     }
     val finalTitle = albumTag.trim +  title.getOrElse(name.get)
 

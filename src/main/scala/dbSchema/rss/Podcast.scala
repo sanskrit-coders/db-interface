@@ -137,11 +137,12 @@ case class PodcastItem(var title: String, var enclosureUrlUnencoded: String, var
   */
 //noinspection ScalaDocMissingParameterDescription
 case class Podcast(var title: String, var description: String,
-                   var imageUrl: String, var languageCode: String,
+                   var imageUrl: String, var languageCode: String, var publisherEmail: String,
                    var websiteUrl: Option[String] = None,
                    var copyright: Option[String] = None,
                    var subtitle: Option[String] = None,
-                   var publisher: Option[String] = None, var author: Option[String] = None, var publisherEmail: String, var timeSecs1970: Option[Long] = None,
+                   var publisher: Option[String] = None, var author: Option[String] = None,
+                   var timeSecs1970: Option[Long] = None,
                    var keywords: Seq[String] = Seq(),
                    var items: Seq[PodcastItem], var feedUrl:Option[String] = None,
                    var isExplicitYesNo: Option[String] = None, var categories: Seq[String] = Seq("Society & Culture")) {

@@ -28,15 +28,22 @@ case class ItemInfo( created: Option[Double],
   }
 
   def toPodcast(filePattern: String, useArchiveOrder: Boolean = true, podcast: Podcast): Podcast = {
-    val url = s"https://archive.org/details/${metadata.identifier}"
-    val author = if (metadata.creator.isDefined) metadata.creator else metadata.uploader.map(_.replaceFirst("@.+", ""))
+    val itemUrl = s"https://archive.org/details/${metadata.identifier}"
+    val websiteUrlFinal = if (podcast.websiteUrl.isDefined) podcast.websiteUrl else Some(itemUrl)
+
+    val itemAuthor = if (metadata.creator.isDefined) metadata.creator else metadata.uploader.map(_.replaceFirst("@.+", ""))
+    val authorFinal = if (podcast.author.isDefined ) podcast.author else itemAuthor
 
     val titleFinal = if (podcast.title.isEmpty) metadata.title.getOrElse(metadata.identifier) else podcast.title
 
-    val items = getPodcastItems(filePattern=filePattern, useArchiveOrder = useArchiveOrder)
+    val descriptionFinal = if (podcast.description.isEmpty) s"A podcast created using https://github.com/vedavaapi/scala-akka-http-server from the archive item: ${itemUrl}, with description:\n${metadata.description.getOrElse("")}." else podcast.description
+
+    val itemPublishTimeFinal = if (podcast.timeSecs1970.isDefined) podcast.timeSecs1970 else  metadata.getModificationTime1970Secs()
+
+    val items = getPodcastItems(filePattern=filePattern, useArchiveOrder = useArchiveOrder, itemPublishTime = itemPublishTimeFinal)
 
     // Archive items seem to be available under variants of the Creative Commons license, chosen at upload-time. (Deduced from seeing https://archive.org/editxml.php?type=audio&edit_item=CDAC-tArkShya-shAstra-viShayaka-bhAShaNAni )
-    podcast.copy(title = titleFinal, description = s"A podcast created using https://github.com/vedavaapi/scala-akka-http-server from the archive item: $url, with description:\n${metadata.description.getOrElse("")}.", websiteUrl = Some(url), author = author,  timeSecs1970 = metadata.getModificationTime1970Secs(), keywords = metadata.subject.getOrElse(Seq()), items=items)
+    podcast.copy(title = titleFinal, description = descriptionFinal, websiteUrl = websiteUrlFinal, author = authorFinal,  timeSecs1970 = itemPublishTimeFinal, keywords = Seq.concat(podcast.keywords, metadata.subject.getOrElse(Seq())), items=items)
   }
 
 }
