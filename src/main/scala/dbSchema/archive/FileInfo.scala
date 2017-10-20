@@ -22,6 +22,22 @@ case class FileInfo(
                  album: Option[String]
                ) {
   private val log = LoggerFactory.getLogger(this.getClass)
+  private final val defaultLengthSecs = 600
+
+  def getLengthSecs: Int = {
+    // Rare cases: Failed to parse length 30:58 for file Some(ra ganesh upanyasa on Ramayana - chandana tv.mp3)
+    val lengthString = length.getOrElse(defaultLengthSecs.toString)
+    val lengthParts = lengthString.split(":").reverse.toList
+    var intLength = lengthParts.head.toFloat.toInt
+    if (lengthParts.size > 1) {
+      intLength = intLength + lengthParts(1).toInt * 60
+    }
+    if (lengthParts.size > 2) {
+      intLength = intLength + lengthParts(2).toInt * 60 * 60
+    }
+    intLength
+  }
+
   def toPodcastItem(itemMetadata: ItemMetadata,  publishTime: Option[Long] = None, ordinal: Option[Int] = None): PodcastItem = {
     val albumTag = album.getOrElse("") + " "
     var timeSecs1970 = mtime.getOrElse("0").toLong
@@ -33,9 +49,7 @@ case class FileInfo(
     }
     val finalTitle = s"${albumTag.trim} ${title.getOrElse(name.get)} ${name.get}"
 
-    val defaultLengthSecs = 600
-    // Rare cases: Failed to parse length 30:58 for file Some(ra ganesh upanyasa on Ramayana - chandana tv.mp3)
-    val lengthTry = Try(length.getOrElse(defaultLengthSecs.toString).toFloat.toInt)
+    val lengthTry = Try(getLengthSecs)
     if (lengthTry.isFailure) {
       log.warn(s"Failed to parse length ${length.get} for file $name.")
     }
