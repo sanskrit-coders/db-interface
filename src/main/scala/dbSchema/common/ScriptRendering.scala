@@ -4,12 +4,12 @@ import org.slf4j.LoggerFactory
 import sanskritnlp.transliteration.transliterator
 
 
-case class ScriptRendering(text: String, scheme: Option[String] = None) {
+case class ScriptRendering(text: String, encoding_scheme: Option[String] = None) {
   val log = LoggerFactory.getLogger(getClass.getName)
 
   // A unique identifier for a text rendering.
   def getKey: String = {
-    scheme match {
+    encoding_scheme match {
       case Some(transliterator.scriptDevanAgarI) => {
         return transliterator.transliterate(
           text.replaceAll("\\P{IsDevanagari}", "").replaceAll("[।॥०-९]+", "").replaceAll("\\s", ""), "dev", "optitrans")
