@@ -6,7 +6,6 @@ class Target(container_id: Option[String]) extends AbstractTarget(container_id =
 
 class BookPositionTarget(val container_id: Option[String], position: Option[Float]) extends AbstractTarget(container_id = container_id)
 
-// Incomplete
 class Rectangle(x: Option[Float], y: Option[Float], w: Option[Float], h: Option[Float], score: Option[Float])
 class ImageTarget(val container_id: Option[String], rectangle: Option[Rectangle]) extends AbstractTarget(container_id = container_id)
 
