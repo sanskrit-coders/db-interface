@@ -1,11 +1,10 @@
 package dbUtils
 
 import dbSchema.archive.{FileInfo, ItemInfo, ItemMetadata}
-import dbSchema.common.Text
+import dbSchema.common.{NamedEntity, ScriptRendering, Text}
 import dbSchema.dcs.{DcsBook, DcsChapter, DcsOldBook, DcsSentence}
 import dbSchema.dictionary._
 import dbSchema.grammar._
-import dbSchema.quote.{QuoteText, _}
 import dbSchema.vedavaapi._
 import org.json4s.native.Serialization
 import org.json4s.{DefaultFormats, Extraction, ShortTypeHints}
@@ -19,34 +18,49 @@ class JsonHelper {
     override val typeHintFieldName = JSON_CLASS_FIELD_NAME
     override val typeHints = ShortTypeHints(
       List(
-        classOf[Text],
-        classOf[TopicAnnotation],
-        classOf[RatingAnnotation],
+        // dictionary/*.scala
         classOf[DictEntry],
         classOf[DictLocation],
+
+        // dcs/*.scala
         classOf[DcsBook],
         classOf[DcsOldBook],
         classOf[DcsChapter],
         classOf[DcsSentence],
+
+        // archive/*.scala
         classOf[ItemInfo],
         classOf[ItemMetadata],
         classOf[FileInfo],
+
+        // grammar/*.scala
         classOf[SupVibhakti],
         classOf[Subanta],
         classOf[Subantaavalii],
         classOf[Praatipadika],
         classOf[Dhaatu],
         classOf[TinVivaxaa],
+
+        // common/*.scala
+        classOf[Text],
+        classOf[NamedEntity],
+        classOf[ScriptRendering],
+        classOf[JsonObjectNode],
+
+        // vedavaapi/BookPortion.scala
         classOf[BookPortion],
         classOf[PublicationDetails],
         classOf[CreationDetails],
-        classOf[JsonObjectNode],
+
+        // vedavaapi/Target.scala
         classOf[Target],
         classOf[BookPositionTarget],
         classOf[TextOffsetAddress],
         classOf[TextTarget],
         classOf[Rectangle],
         classOf[ImageTarget],
+
+        // vedavaapi/Annotation.scala
         classOf[ImageAnnotation],
         classOf[TextAnnotation],
         classOf[AnnotationSource],
