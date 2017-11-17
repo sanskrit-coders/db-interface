@@ -7,16 +7,16 @@ import dbSchema.dictionary._
 import dbSchema.grammar._
 import dbSchema.vedavaapi._
 import org.json4s.native.Serialization
-import org.json4s.{DefaultFormats, Extraction, ShortTypeHints}
+import org.json4s.{DefaultFormats, Extraction, Formats, ShortTypeHints}
 
 import scala.reflect.Manifest
 
 
 class JsonHelper {
   val JSON_CLASS_FIELD_NAME = "jsonClass"
-  implicit val formats = new DefaultFormats {
-    override val typeHintFieldName = JSON_CLASS_FIELD_NAME
-    override val typeHints = ShortTypeHints(
+  implicit val formats: Formats = new DefaultFormats {
+    override val typeHintFieldName: String = JSON_CLASS_FIELD_NAME
+    override val typeHints: ShortTypeHints = ShortTypeHints(
       List(
         // dictionary/*.scala
         classOf[DictEntry],
@@ -40,6 +40,8 @@ class JsonHelper {
         classOf[Praatipadika],
         classOf[Dhaatu],
         classOf[TinVivaxaa],
+        classOf[Analysis],
+        classOf[RootAnalysis],
 
         // common/*.scala
         classOf[Text],
