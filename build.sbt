@@ -13,7 +13,7 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "0.9.29"
   ,"ch.qos.logback" % "logback-core" % "0.9.29"
-  ,"org.json4s" % "json4s_2.12" % "3.5.2"
+  ,"org.json4s" % "json4s-ast_2.12" % "3.5.2"
   ,"org.json4s" % "json4s-native_2.12" % "3.5.2"
   ,"org.apache.commons" % "commons-csv" % "1.4"
   ,"com.github.sanskrit-coders" % "indic-transliteration" % "1.7"
