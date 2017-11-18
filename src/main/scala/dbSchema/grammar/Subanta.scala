@@ -4,7 +4,7 @@ package dbSchema.grammar
 case class Praatipadika(var root: Option[String] = None,
                         var prakaara: Option[String] = None,
                         var linga: Option[String] = None,
-                        var rootAnalysis: Option[RootAnalysis] = None,
+                        var rootAnalysis: Option[RootAnalysis] = None
                        )
 case class SupVibhakti(vibhaktiNum: Int, prakaara: Option[String] = None)
 case class Subanta(pada: Option[String] = None, vibhakti: Option[SupVibhakti] = None,

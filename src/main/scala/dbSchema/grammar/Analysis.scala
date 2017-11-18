@@ -24,7 +24,7 @@ case class SclAnalysis(qualifications: Map[String, String]) {
         prayoga = qualifications.get("prayogaH").map(transliterator.transliterate(_, sourceScheme = "wx", destScheme = "dev")),
         lakaara = qualifications.get("lakAraH").map(transliterator.transliterate(_, sourceScheme = "wx", destScheme = "dev")),
         puruSha = qualifications.get("puruRaH").map(transliterator.transliterate(_, sourceScheme = "wx", destScheme = "dev")),
-        vachana = qualifications.get("vacanam").map(analysisHelper.getVachanaIntFromString(_, scheme = "wx")),
+        vachana = qualifications.get("vacanam").map(analysisHelper.getVachanaIntFromString(_, scheme = "wx"))
       )
       Some(Tinanta(dhaatu = Some(dhaatu), vivaxaa = Some(tinVivaxaa)))
     }
@@ -42,14 +42,14 @@ case class SclAnalysis(qualifications: Map[String, String]) {
         prakaara = qualifications.get("vargaH").map(transliterator.transliterate(_, sourceScheme = "wx", destScheme = "dev")).map{
           case "ना" => "साधारणम्"
           case x: String => x
-         },
+         }
       )
       val vibhakti = SupVibhakti(
-        vibhaktiNum = qualifications.get("viBakwiH").map(_.toInt).get,
+        vibhaktiNum = qualifications.get("viBakwiH").map(_.toInt).get
       )
       Some(Subanta(
         vibhakti = Some(vibhakti),
-        vachana = qualifications.get("vacanam").map(analysisHelper.getVachanaIntFromString(_, scheme = "wx")),
+        vachana = qualifications.get("vacanam").map(analysisHelper.getVachanaIntFromString(_, scheme = "wx"))
       ))
     }
   }

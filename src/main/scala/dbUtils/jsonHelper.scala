@@ -73,7 +73,7 @@ class JsonHelper {
         classOf[TopicAnnotation],
         classOf[RatingAnnotation],
         classOf[Metre],
-        classOf[MetreAnnotation],
+        classOf[MetreAnnotation]
       ))
   }.skippingEmptyValues
 
