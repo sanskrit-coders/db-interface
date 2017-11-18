@@ -1,13 +1,14 @@
+
 // This file is a result of a partial attempt at switching to sbt from pom.xml (because it supposedly generates docs for scala code).
 // Source instrctions: http://www.scala-sbt.org/1.0/docs/Using-Sonatype.html . Not completed.
 
-addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "2.0")
-
 name := "db-interface"
+version := "2.9"
 
-version := "2.5"
+scalaVersion := "2.12.3"
 
-scalaVersion := "2.11.11"
+resolvers += Resolver.sonatypeRepo("releases")
+resolvers += Resolver.sonatypeRepo("snapshots")
 
 libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "0.9.29"
@@ -17,7 +18,7 @@ libraryDependencies ++= Seq(
   ,"org.json4s" % "json4s_2.11" % "3.2.11"
   ,"org.json4s" % "json4s-native_2.11" % "3.2.11"
   ,"org.apache.commons" % "commons-csv" % "1.4"
-  ,"com.github.sanskrit-coders" % "indic-transliteration" % "1.1"
+  ,"com.github.sanskrit-coders" % "indic-transliteration" % "1.6"
   //    ,"com.github.sanskrit-coders" % "sanskrit-lttoolbox" % "0.1"
   //  ,"com.github.sanskrit-coders" % "db-interface" % "1.8"
 )
@@ -28,10 +29,6 @@ libraryDependencies ++= Seq(
 
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 
-licenses := Seq("BSD-style" -> url("http://www.opensource.org/licenses/bsd-license.php"))
-
-homepage := Some(url("http://example.com"))
-
 scmInfo := Some(
   ScmInfo(
     url("https://github.com/sanskrit-coders/db-interface"),
@@ -39,21 +36,28 @@ scmInfo := Some(
   )
 )
 
-developers := List(
-  Developer(
-    id    = "sanskrit-coders",
-    name  = "Sanskrit Coders",
-    email = "sanskrit-programmers@googlegroups.com",
-    url   = url("https://sites.google.com/site/sanskritcode/")
-  )
-)
-
 useGpg := true
 publishMavenStyle := true
-publishTo := {
-  val nexus = "https://oss.sonatype.org/"
+publishTo := Some(
   if (isSnapshot.value)
-    Some("snapshots" at nexus + "content/repositories/snapshots")
+    Opts.resolver.sonatypeSnapshots
   else
-    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
-}
+    Opts.resolver.sonatypeStaging
+)
+
+import ReleaseTransformations._
+
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,
+  inquireVersions,
+  runClean,
+  runTest,
+  setReleaseVersion,
+  commitReleaseVersion,
+  tagRelease,
+  releaseStepCommand("publishSigned"),
+  setNextVersion,
+  commitNextVersion,
+  releaseStepCommand("sonatypeReleaseAll"),
+  pushChanges
+)
