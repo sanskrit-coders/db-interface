@@ -23,6 +23,9 @@ libraryDependencies ++= Seq(
   //  ,"com.github.sanskrit-coders" % "db-interface" % "1.8"
 )
 
+libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.4"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.4" % "test"
+
 //unmanagedJars in (Compile, run) += file("/home/vvasuki/db-interface/target/db-interface-1.8.jar")
 //unmanagedClasspath in (Compile, run) += file("/home/vvasuki/db-interface/target/db-interface-1.8/classes")
 //unmanagedSources in (Compile, run)  += file("/home/vvasuki/db-interface/src/main/scala")
