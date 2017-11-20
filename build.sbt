@@ -3,7 +3,6 @@
 // Source instrctions: http://www.scala-sbt.org/1.0/docs/Using-Sonatype.html . Not completed.
 
 name := "db-interface"
-version := "2.9"
 
 scalaVersion := "2.12.3"
 
