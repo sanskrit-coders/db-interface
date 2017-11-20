@@ -1,8 +1,9 @@
 # db-interface
 An interface to various data stores, defining common scala case classes corresponding to JSON objects and XML nodes, with helpful methods to (de)serialize such objects.
 
-# Maven setup tips:
-
+# Deployment:
+- Use sbt command `release` to publish to maven repos.
+- You should be able to use it roughly immediately; and after many hours you should see at maven repo listings [here](https://mvnrepository.com/artifact/com.github.sanskrit-coders). 
 
 # couchdb tips
 ## User addition
