@@ -1,4 +1,6 @@
-# db-interface
+# Intro
+
+[![Build Status](https://travis-ci.org/sanskrit-coders/db-interface.svg?branch=master)](https://travis-ci.org/sanskrit-coders/db-interface)
 An interface to various data stores, defining common scala case classes corresponding to JSON objects and XML nodes, with helpful methods to (de)serialize such objects.
 
 # Deployment:
