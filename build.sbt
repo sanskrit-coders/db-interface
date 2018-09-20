@@ -4,24 +4,28 @@
 
 name := "db-interface"
 
-scalaVersion := "2.12.3"
+scalaVersion := "2.12.6"
 
 resolvers += Resolver.sonatypeRepo("releases")
 resolvers += Resolver.sonatypeRepo("snapshots")
 
+val scalactestVersion = "3.0.5"
+val logbackVersion = "1.2.3"
+val json4sVersion = "3.6.1"
+
+
 libraryDependencies ++= Seq(
-  "ch.qos.logback" % "logback-classic" % "0.9.29"
-  ,"ch.qos.logback" % "logback-core" % "0.9.29"
-  ,"org.json4s" % "json4s-ast_2.12" % "3.5.2"
-  ,"org.json4s" % "json4s-native_2.12" % "3.5.2"
-  ,"org.apache.commons" % "commons-csv" % "1.4"
-  ,"com.github.sanskrit-coders" % "indic-transliteration_2.12" % "1.8"
+  "ch.qos.logback" % "logback-classic" % logbackVersion
+  ,"ch.qos.logback" % "logback-core" % logbackVersion
+  ,"org.json4s" % "json4s-ast_2.12" % json4sVersion
+  ,"org.json4s" % "json4s-native_2.12" % json4sVersion
+  ,"org.apache.commons" % "commons-csv" % "1.5"
+  ,"com.github.sanskrit-coders" % "indic-transliteration_2.12" % "1.30"
   //    ,"com.github.sanskrit-coders" % "sanskrit-lttoolbox" % "0.1"
-  //  ,"com.github.sanskrit-coders" % "db-interface" % "1.8"
 )
 
-libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.4"
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.4" % "test"
+libraryDependencies += "org.scalactic" %% "scalactic" % scalactestVersion
+libraryDependencies += "org.scalatest" %% "scalatest" % scalactestVersion % "test"
 
 //unmanagedJars in (Compile, run) += file("/home/vvasuki/db-interface/target/db-interface-1.8.jar")
 //unmanagedClasspath in (Compile, run) += file("/home/vvasuki/db-interface/target/db-interface-1.8/classes")
