@@ -19,6 +19,7 @@ libraryDependencies ++= Seq(
   ,"ch.qos.logback" % "logback-core" % logbackVersion
   ,"org.json4s" % "json4s-ast_2.12" % json4sVersion
   ,"org.json4s" % "json4s-native_2.12" % json4sVersion
+  ,"org.scala-lang.modules" %% "scala-xml" % "1.1.0"
   ,"org.apache.commons" % "commons-csv" % "1.5"
   ,"com.github.sanskrit-coders" % "indic-transliteration_2.12" % "1.30"
   //    ,"com.github.sanskrit-coders" % "sanskrit-lttoolbox" % "0.1"
