@@ -63,7 +63,7 @@ case class PodcastItem(var title: String, var enclosureUrlUnencoded: String, var
         {
         // Services such as IFTTT use this, though podcast services don't require it. 
         }
-        <link>enclosureUriFinal</link>
+        <link>{enclosureUriFinal}</link>
         <itunes:summary>
           {description}
         </itunes:summary>
