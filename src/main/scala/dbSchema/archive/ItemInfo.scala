@@ -24,7 +24,7 @@ case class ItemInfo( created: Option[Double],
 
     itemFiles.sortBy(_.name.get).zipWithIndex.map( {case (itemFile: FileInfo, index: Int) =>
       val ordinal = if (useArchiveOrder) Some(index) else None
-      itemFile.toPodcastItem(itemMetadata = metadata, publishTime = itemPublishTime, ordinal = ordinal)})
+      itemFile.toPodcastItem(archiveItemMetadata = metadata, publishTime = itemPublishTime, ordinal = ordinal)})
   }
 
   def toPodcast(filePattern: String, useArchiveOrder: Boolean = true, podcast: Podcast): Podcast = {

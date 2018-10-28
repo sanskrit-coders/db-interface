@@ -19,7 +19,10 @@ case class FileInfo(
                  height: Option[String],
                  width: Option[String],
                  title: Option[String],
-                 album: Option[String]
+                 album: Option[String],
+                 album_artist: Option[String],
+                 artist: Option[String],
+                 creator: Option[String]
                ) {
   private val log = LoggerFactory.getLogger(this.getClass)
   private final val defaultLengthSecs = 600
@@ -38,7 +41,8 @@ case class FileInfo(
     intLength
   }
 
-  def toPodcastItem(itemMetadata: ItemMetadata,  publishTime: Option[Long] = None, ordinal: Option[Int] = None): PodcastItem = {
+  // archive item is not a podcast item.
+  def toPodcastItem(archiveItemMetadata: ItemMetadata, publishTime: Option[Long] = None, ordinal: Option[Int] = None): PodcastItem = {
     val albumTag = album.getOrElse("") + " "
     var timeSecs1970 = mtime.getOrElse("0").toLong
     if (publishTime.isDefined) {
@@ -47,7 +51,7 @@ case class FileInfo(
       val intervalBetweenItems = 1
       timeSecs1970 = publishTime.get + intervalBetweenItems * ordinal.getOrElse(0)
     }
-    val finalTitle = s"${albumTag.trim} ${title.getOrElse(name.get)} ${name.get}"
+    val finalTitle = s"${albumTag.trim} ${title.getOrElse(name.get)} ${artist.getOrElse("")}"
 
     val lengthTry = Try(getLengthSecs)
     if (lengthTry.isFailure) {
@@ -55,7 +59,7 @@ case class FileInfo(
     }
 
     // Not passing , ordinal=ordinal below: see PodcastItem comments for reasons.
-    PodcastItem(title = finalTitle, enclosureUrlUnencoded = s"https://archive.org/download/${itemMetadata.identifier}/${name.get}",
+    PodcastItem(title = finalTitle, enclosureUrlUnencoded = s"https://archive.org/download/${archiveItemMetadata.identifier}/${name.get}", author=artist,
       lengthInSecs = lengthTry.getOrElse(defaultLengthSecs), timeSecs1970 = timeSecs1970)
   }
 

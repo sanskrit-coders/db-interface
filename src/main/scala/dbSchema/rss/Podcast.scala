@@ -17,11 +17,11 @@ object timeHelper {
     val format = new SimpleDateFormat(pattern)
     var time: Date = null
     if (timeSecs1970 == 0) {
-      time = Calendar.getInstance().getTime()
+      time = Calendar.getInstance().getTime
     } else {
       time = new Date(timeSecs1970 * 1000)
     }
-    return format.format(time)
+    format.format(time)
   }
 }
 
@@ -37,7 +37,7 @@ object timeHelper {
   * @param itunesCategoryCode
   */
 case class PodcastItem(var title: String, var enclosureUrlUnencoded: String, var lengthInSecs: Int, var description: String = null, var shortDescription: String = null, var timeSecs1970: Long = 0,
-                       var itunesCategoryCode: Option[Int] = None, var ordinal: Option[Int] = None) {
+                       var itunesCategoryCode: Option[Int] = None, var ordinal: Option[Int] = None, author: Option[String] = None) {
   private val log = LoggerFactory.getLogger(this.getClass)
   if (description == null) {
     description = title
@@ -60,12 +60,21 @@ case class PodcastItem(var title: String, var enclosureUrlUnencoded: String, var
         <description>
           {description}
         </description>
+        {
+        // Services such as IFTTT use this, though podcast services don't require it. 
+        }
+        <link>enclosureUriFinal</link>
         <itunes:summary>
           {description}
         </itunes:summary>
         <itunes:subtitle>
           {shortDescription}
         </itunes:subtitle>
+
+        {
+        if (author.isDefined)
+          <author>{author.get}</author>
+        }
 
         {
         // iTunesU Category Codes: http://sitemanager.itunes.apple.com/help/#itu337EEAE0-035A-4660-B53D-46A13A7721E5)
