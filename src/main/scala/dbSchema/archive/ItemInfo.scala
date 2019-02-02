@@ -14,13 +14,15 @@ case class ItemInfo( created: Option[Double],
                      uniq: Option[Double],
                      workable_servers: Option[List[String]]
                    ) {
+  
+  def getPodcastFileInfos(filePattern:String) =  files.filter(fileInfo => {
+    val fileName = fileInfo.name.get
+    fileName.matches(filePattern)
+  })
 
-  def getPodcastItems(filePattern: String, useArchiveOrder: Boolean = true, itemPublishTime: Option[Long] = None): List[PodcastItem] = {
+
+  def getPodcastItems(itemFiles: List[FileInfo], useArchiveOrder: Boolean = true, itemPublishTime: Option[Long] = None): List[PodcastItem] = {
     val intervalBetweenItems = 1
-    val itemFiles = files.filter(fileInfo => {
-      val fileName = fileInfo.name.get
-      fileName.matches(filePattern)
-    })
 
     itemFiles.sortBy(_.name.get).zipWithIndex.map( {case (itemFile: FileInfo, index: Int) =>
       val itemPublishTimeFinal: Option[Long] = if (useArchiveOrder) itemPublishTime.map(_ + intervalBetweenItems * index) else None
@@ -38,9 +40,10 @@ case class ItemInfo( created: Option[Double],
 
     val descriptionFinal = if (podcast.description.isEmpty) s"A podcast created using https://github.com/vedavaapi/scala-akka-http-server from the archive item: $itemUrl, with description:\n${metadata.description.getOrElse("")}." else podcast.description
 
-    val itemPublishTimeFinal = if (podcast.timeSecs1970.isDefined) podcast.timeSecs1970 else  metadata.getModificationTime1970Secs()
+    val itemFileInfos = getPodcastFileInfos(filePattern=filePattern)
+    val itemPublishTimeFinal = if (podcast.timeSecs1970.isDefined) podcast.timeSecs1970 else  Some(itemFileInfos.map(_.mtime.getOrElse("0").toLong).max)
 
-    val items = getPodcastItems(filePattern=filePattern, useArchiveOrder = useArchiveOrder, itemPublishTime = itemPublishTimeFinal)
+    val items = getPodcastItems(itemFiles = itemFileInfos, useArchiveOrder = useArchiveOrder, itemPublishTime = itemPublishTimeFinal)
 
     // Archive items seem to be available under variants of the Creative Commons license, chosen at upload-time. (Deduced from seeing https://archive.org/editxml.php?type=audio&edit_item=CDAC-tArkShya-shAstra-viShayaka-bhAShaNAni )
     podcast.copy(title = titleFinal, description = descriptionFinal, websiteUrl = websiteUrlFinal, author = authorFinal,  timeSecs1970 = itemPublishTimeFinal, keywords = Seq.concat(podcast.keywords, metadata.subject.getOrElse(Seq())), items=items)

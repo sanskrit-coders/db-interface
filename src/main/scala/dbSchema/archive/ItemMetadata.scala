@@ -16,7 +16,7 @@ case class ItemMetadata(
                      backup_location: Option[String]
                    ) {
 
-  def getModificationTime1970Secs(): Option[Long] = {
+  def getCreationTime1970Secs(): Option[Long] = {
     var modTimeString = addeddate
     if (!addeddate.isDefined) {
       modTimeString = publicdate
