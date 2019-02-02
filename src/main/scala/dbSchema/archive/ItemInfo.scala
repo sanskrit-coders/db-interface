@@ -16,15 +16,15 @@ case class ItemInfo( created: Option[Double],
                    ) {
 
   def getPodcastItems(filePattern: String, useArchiveOrder: Boolean = true, itemPublishTime: Option[Long] = None): List[PodcastItem] = {
-    val itemPublishTime = if (useArchiveOrder) metadata.getModificationTime1970Secs() else None
+    val intervalBetweenItems = 1
     val itemFiles = files.filter(fileInfo => {
       val fileName = fileInfo.name.get
       fileName.matches(filePattern)
     })
 
     itemFiles.sortBy(_.name.get).zipWithIndex.map( {case (itemFile: FileInfo, index: Int) =>
-      val ordinal = if (useArchiveOrder) Some(index) else None
-      itemFile.toPodcastItem(archiveItemMetadata = metadata, publishTime = itemPublishTime, ordinal = ordinal)})
+      val itemPublishTimeFinal: Option[Long] = if (useArchiveOrder) itemPublishTime.map(_ + intervalBetweenItems * index) else None
+      itemFile.toPodcastItem(archiveItemMetadata = metadata, publishTime = itemPublishTimeFinal)})
   }
 
   def toPodcast(filePattern: String, useArchiveOrder: Boolean = true, podcast: Podcast): Podcast = {
@@ -36,7 +36,7 @@ case class ItemInfo( created: Option[Double],
 
     val titleFinal = if (podcast.title.isEmpty) metadata.title.getOrElse(metadata.identifier) else podcast.title
 
-    val descriptionFinal = if (podcast.description.isEmpty) s"A podcast created using https://github.com/vedavaapi/scala-akka-http-server from the archive item: ${itemUrl}, with description:\n${metadata.description.getOrElse("")}." else podcast.description
+    val descriptionFinal = if (podcast.description.isEmpty) s"A podcast created using https://github.com/vedavaapi/scala-akka-http-server from the archive item: $itemUrl, with description:\n${metadata.description.getOrElse("")}." else podcast.description
 
     val itemPublishTimeFinal = if (podcast.timeSecs1970.isDefined) podcast.timeSecs1970 else  metadata.getModificationTime1970Secs()
 

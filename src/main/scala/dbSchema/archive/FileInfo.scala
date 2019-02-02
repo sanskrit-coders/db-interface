@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory
 
 import scala.util.Try
 
+// Metadata example at source: https://archive.org/metadata/mahAbhArata-mUla-paThanam-GP .
 // Generated using https://json2caseclass.cleverapps.io/ while referring to http://jsoneditoronline.org/?id=e031ab3cecf3cd6e0891eb9f303cd963
 case class FileInfo(
                  name: Option[String],
@@ -42,15 +43,9 @@ case class FileInfo(
   }
 
   // archive item is not a podcast item.
-  def toPodcastItem(archiveItemMetadata: ItemMetadata, publishTime: Option[Long] = None, ordinal: Option[Int] = None): PodcastItem = {
+  def toPodcastItem(archiveItemMetadata: ItemMetadata, publishTime: Option[Long] = None): PodcastItem = {
     val albumTag = album.getOrElse("") + " "
-    var timeSecs1970 = mtime.getOrElse("0").toLong
-    if (publishTime.isDefined) {
-      // doggcatcher allegedly only uses date, not time - http://www.doggcatcher.com/node/6804 !
-      // So might need to do 24*3600 below.
-      val intervalBetweenItems = 1
-      timeSecs1970 = publishTime.get + intervalBetweenItems * ordinal.getOrElse(0)
-    }
+    var timeSecs1970 = publishTime.getOrElse(mtime.getOrElse("0").toLong)
     val finalTitle = s"${albumTag.trim} ${title.getOrElse(name.get)} ${artist.getOrElse("")}"
 
     val lengthTry = Try(getLengthSecs)
