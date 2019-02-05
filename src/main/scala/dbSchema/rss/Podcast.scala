@@ -83,7 +83,7 @@ case class Podcast(var title: String, var description: String,
     case e: Elem => e.copy(child = e.child ++ c)
   }
 
-  def getNode: Node = {
+  def getFeedNode: Node = {
     // XML encoding happens automatically when the node is rendered, no need to specially encode.
     var feed =
       <rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:itunesu="http://www.itunesu.com/feed" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
@@ -207,6 +207,6 @@ object podcastTest {
   def main(args: Array[String]): Unit = {
     val podcastItems = Seq(PodcastItem(title = "xyz", enclosureUrlUnencoded = "http://enclosure.mp3", lengthInSecs = 601))
     val podcast = Podcast(title = "संस्कृतशास्त्राणि: shastras in sanskrit", description = "", publisherEmail = "sanskrit-programmers@googlegroups.com", items = podcastItems, imageUrl = "https://i.imgur.com/dQjPQYi.jpg", languageCode = "en")
-    print(podcast.getNode)
+    print(podcast.getFeedNode)
   }
 }

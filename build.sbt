@@ -20,6 +20,7 @@ libraryDependencies ++= Seq(
   ,"org.json4s" % "json4s-native_2.12" % json4sVersion
   ,"org.scala-lang.modules" %% "scala-xml" % "1.1.1"
   ,"org.apache.commons" % "commons-csv" % "1.5"
+  , "com.github.scopt" % "scopt_2.12" % "4.0.0-RC2"
   ,"com.github.sanskrit-coders" % "indic-transliteration_2.12" % "1.30"
   //    ,"com.github.sanskrit-coders" % "sanskrit-lttoolbox" % "0.1"
 )

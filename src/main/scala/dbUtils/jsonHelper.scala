@@ -8,11 +8,13 @@ import dbSchema.grammar._
 import dbSchema.vedavaapi._
 import org.json4s.native.Serialization
 import org.json4s.{DefaultFormats, Extraction, Formats, ShortTypeHints}
+import org.slf4j.LoggerFactory
 
 import scala.reflect.Manifest
 
 
 class JsonHelper {
+  private val log = LoggerFactory.getLogger(this.getClass)
   val JSON_CLASS_FIELD_NAME = "jsonClass"
   implicit val formats: Formats = new DefaultFormats {
     override val typeHintFieldName: String = JSON_CLASS_FIELD_NAME
@@ -93,19 +95,19 @@ class JsonHelper {
     Serialization.read[T](jsonStr)
   }
   
-  def fromFile[T](filePath: String): T = {
-    fromString(scala.io.Source.fromFile(filePath).mkString)
+  def fromFile[T](filePath: String)(implicit mf: Manifest[T]): T = {
+    fromString[T](scala.io.Source.fromFile(filePath).mkString)
   }
 
-  def fromUrl[T](url: String): T = {
-    fromString(scala.io.Source.fromURL(url).mkString)
+  def fromUrl[T](url: String)(implicit mf: Manifest[T]): T = {
+    fromString[T](scala.io.Source.fromURL(url).mkString)
   }
   
-  def fromUrlOrFile[T](url: String): T = {
+  def fromUrlOrFile[T](url: String)(implicit mf: Manifest[T]): T = {
     try {
-      fromUrl(url)
+      fromUrl[T](url)
     } catch {
-      case _: Throwable => fromFile(url)
+      case _: Throwable => fromFile[T](url)
     }
   }
 
