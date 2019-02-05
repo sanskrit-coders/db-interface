@@ -32,7 +32,7 @@ object commandInterface {
     parser.parse(args, CommandConfig()) match {
       case Some(commandConfig) => {
         log.debug(commandConfig.toString)
-        if (commandConfig.mode == Some("podcastFromRequest")) {
+        if (commandConfig.mode.contains("podcastFromRequest")) {
           val podcastRequest = jsonHelper.fromUrlOrFile[ArchivePodcastRequest](commandConfig.requestJsonPath.get)
           val podcast = podcastRequest.getPodcast
           val feedNode = podcast.getFeedNode
