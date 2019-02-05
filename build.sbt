@@ -51,11 +51,16 @@ publishTo := Some(
 
 import ReleaseTransformations._
 
+
+assemblyOutputPath in assembly := file("bin/artifacts/db-interface.jar")
+mainClass in assembly := Some("dbUtils.commandInterface")
+
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
   runClean,
   runTest,
+  releaseStepCommand("assembly"),
   setReleaseVersion,
   commitReleaseVersion,
   tagRelease,

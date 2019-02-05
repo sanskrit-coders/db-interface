@@ -92,6 +92,22 @@ class JsonHelper {
     // Alternative method: JsonMethods.parse(responseString).extract[ItemInfo]
     Serialization.read[T](jsonStr)
   }
+  
+  def fromFile[T](filePath: String): T = {
+    fromString(scala.io.Source.fromFile(filePath).mkString)
+  }
+
+  def fromUrl[T](url: String): T = {
+    fromString(scala.io.Source.fromURL(url).mkString)
+  }
+  
+  def fromUrlOrFile[T](url: String): T = {
+    try {
+      fromUrl(url)
+    } catch {
+      case _: Throwable => fromFile(url)
+    }
+  }
 
   def fromJsonMap[T](jsonMap: collection.Map[String, _])(implicit mf: Manifest[T]): T = {
     val jobj = Extraction.decompose(jsonMap)
