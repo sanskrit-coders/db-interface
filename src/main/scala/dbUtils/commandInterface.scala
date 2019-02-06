@@ -35,6 +35,7 @@ object commandInterface {
         if (commandConfig.mode.contains("podcastFromRequest")) {
           val podcastRequest = jsonHelper.fromUrlOrFile[ArchivePodcastRequest](commandConfig.requestJsonPath.get)
           val podcast = podcastRequest.getPodcast
+          new java.io.File(new java.io.File(commandConfig.outputPath.get).getParent).mkdirs()
           val feedNode = podcast.getFeedNode
           reflect.io.File(commandConfig.outputPath.get).writeAll(feedNode.toString())
         }
