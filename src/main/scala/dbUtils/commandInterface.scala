@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory
 
 /**
   * Example invocation:
-  * java -jar bin/artifacts/dict-tools.jar install /home/vvasuki/sanskrit-coders/stardict-dicts-installed/ https://raw.githubusercontent.com/sanskrit-coders/stardict-dictionary-updater/master/dictionaryIndices.md
+  * java -Xmx1G -Xss32m -jar db-interface.jar podcastFromRequest --requestJsonPath feeds/sa/requestJsons/mahAbhArata-mUla-paThanam.json  --outputPath auto-built-feeds/sa/mahAbhArata-mUla-paThanam.rss
   */
 case class CommandConfig(mode: Option[String]=None, requestJsonPath: Option[String]=None, outputPath: Option[String]=None)
 
