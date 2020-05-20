@@ -1,6 +1,7 @@
 package dbSchema.archive
 
 import dbSchema.rss.{Podcast, PodcastItem}
+import org.slf4j.LoggerFactory
 
 // Example data: http://jsoneditoronline.org/?id=e031ab3cecf3cd6e0891eb9f303cd963
 case class ItemInfo( created: Option[Double],
@@ -14,6 +15,7 @@ case class ItemInfo( created: Option[Double],
                      uniq: Option[Double],
                      workable_servers: Option[List[String]]
                    ) {
+  private val log = LoggerFactory.getLogger(this.getClass)
   
   def getPodcastFileInfos(filePattern:String) =  files.filter(fileInfo => {
     val fileName = fileInfo.name.get
@@ -41,7 +43,12 @@ case class ItemInfo( created: Option[Double],
     val descriptionFinal = if (podcast.description.isEmpty) s"A podcast created using https://github.com/vedavaapi/scala-akka-http-server from the archive item: $itemUrl, with description:\n${metadata.description.getOrElse("")}." else podcast.description
 
     val itemFileInfos = getPodcastFileInfos(filePattern=filePattern)
-    val itemPublishTimeFinal = if (podcast.timeSecs1970.isDefined) podcast.timeSecs1970 else  Some(itemFileInfos.map(_.mtime.getOrElse("0").toLong).max)
+    var itemPublishTimeFinal: Option[Long] = None
+    if (itemFileInfos.length == 0) {
+      log.error("Did not get any item files!")
+    } else {
+      itemPublishTimeFinal = if (podcast.timeSecs1970.isDefined) podcast.timeSecs1970 else  Some(itemFileInfos.map(_.mtime.getOrElse("0").toLong).max)
+    }
 
     val items = getPodcastItems(itemFiles = itemFileInfos, useArchiveOrder = useArchiveOrder, itemPublishTime = itemPublishTimeFinal)
 
