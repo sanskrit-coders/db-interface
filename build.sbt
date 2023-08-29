@@ -3,25 +3,28 @@
 
 name := "db-interface"
 
-scalaVersion := "2.12.6"
-
-resolvers += Resolver.sonatypeRepo("releases")
-resolvers += Resolver.sonatypeRepo("snapshots")
-
-val scalactestVersion = "3.0.5"
+scalaVersion := "2.13.10"
 val logbackVersion = "1.2.3"
-val json4sVersion = "3.6.1"
+val json4sVersion = "4.0.6"
+val scalatestVersion = "3.2.14"
+
+resolvers +=
+  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+resolvers +=
+  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/releases"
+resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
+
 
 
 libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % logbackVersion
-  ,"ch.qos.logback" % "logback-core" % logbackVersion
-  ,"org.json4s" % "json4s-ast_2.12" % json4sVersion
-  ,"org.json4s" % "json4s-native_2.12" % json4sVersion
+  , "ch.qos.logback" % "logback-core" % logbackVersion
+  , "org.json4s" % "json4s-ast_2.13" % json4sVersion
+  , "org.json4s" % "json4s-native_2.13" % json4sVersion
   ,"org.scala-lang.modules" %% "scala-xml" % "1.1.1"
   ,"org.apache.commons" % "commons-csv" % "1.5"
-  , "com.github.scopt" % "scopt_2.12" % "4.0.0-RC2"
-  ,"com.github.sanskrit-coders" % "indic-transliteration_2.12" % "1.30"
+  , "com.github.scopt" % "scopt_2.13" % "4.1.0"
+  ,"com.github.sanskrit-coders" % "indic-transliteration_2.13" % "1.30"
   //    ,"com.github.sanskrit-coders" % "sanskrit-lttoolbox" % "0.1"
 )
 
